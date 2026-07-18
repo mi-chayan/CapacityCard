@@ -1,642 +1,762 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PIB Blank Card</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Capacity Sticker Generator | SNOWTEX Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap');
-
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Noto Sans Bengali','SolaimanLipi',sans-serif;
-    margin: 0;
-    padding: 16px;
-    background: #eee;
-  }
-
-  .controls {
-    max-width: 900px;
-    margin: 0 auto 18px auto;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 14px 18px;
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .controls label { font-weight: 700; font-size: 14px; margin-right: 6px; }
-  .controls input, .controls select {
-    font-family: inherit; font-size: 14px; padding: 6px 8px;
-    border: 1px solid #999; border-radius: 4px; width: 150px;
-  }
-  .controls input.wide { width: 320px; }
-  .controls button {
-    font-family: inherit; font-size: 14px; font-weight: 700; padding: 8px 16px;
-    border: none; border-radius: 4px; background: #1b5fa8; color: #fff; cursor: pointer;
-  }
-  .controls button:hover { background: #144a85; }
-  .controls button:disabled { background: #a9b8c9; cursor: not-allowed; }
-  .controls button.secondary { background: #6b7280; }
-  .controls button.secondary:hover { background: #52585f; }
-  #uploadStatus, #policyStatus, #selectStatus { font-size: 13px; color: #1b5fa8; font-weight: 600; width:100%; }
-
-  .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .switch .slider {
-    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc; transition: .2s; border-radius: 22px;
-  }
-  .switch .slider:before {
-    position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
-    background-color: white; transition: .2s; border-radius: 50%;
-  }
-  .switch input:checked + .slider { background-color: #1b5fa8; }
-  .switch input:checked + .slider:before { transform: translateX(20px); }
-
-  .param-panel {
-    max-width: 900px; margin: 0 auto 18px auto; background: #fff;
-    border: 1px solid #ddd; border-radius: 8px; padding: 16px 20px;
-  }
-  .param-panel h3 {
-    margin: 0 0 14px 0; font-size: 15px; font-weight: 700; color: #14213d;
-    border-left: 4px solid #d32f2f; padding-left: 10px;
-  }
-  .param-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-  .param-field label {
-    display: block; font-size: 11px; font-weight: 700; color: #555;
-    text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px;
-  }
-  .param-field label .opt-tag {
-    background: #eef2f7; color: #888; font-size: 9px; font-weight: 500;
-    text-transform: none; padding: 2px 6px; border-radius: 8px; margin-left: 6px;
-  }
-  .param-field input, .param-field select {
-    width: 100%; padding: 9px 10px; background: #f7f8fa; border: 1px solid #e1e4e9;
-    border-radius: 6px; font-size: 14px; font-family: inherit;
-  }
-  .param-actions { margin-top: 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-
-  .page-nav {
-    max-width: 900px; margin: 0 auto 14px auto; background: #fff; border: 1px solid #ccc;
-    border-radius: 6px; padding: 10px 18px; display: flex; align-items: center;
-    justify-content: center; gap: 16px;
-  }
-  .page-nav #pageIndicator { font-weight: 700; font-size: 14px; color: #14213d; min-width: 140px; text-align: center; }
-
-  #pagesContainer .page { display: none; }
-  #pagesContainer .page.active { display: grid; }
-
-  .page {
-    background: #fff; width: 287mm; height: 200mm; margin: 0 auto 6mm auto; padding: 3mm;
-    grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr);
-    column-gap: 1.5mm; row-gap: 2mm; border: 1px solid #999; overflow: hidden;
-  }
-
-  .card { border: 1.25px solid #000; display: flex; flex-direction: column; font-size: 7px; overflow: hidden; }
-
-  .card .title-row { display: flex; border-bottom: 1px solid #000; height: 5mm; flex: 0 0 auto; }
-  .card .title-row .title {
-    flex: 1.1; font-weight: 700; font-size: 9.5px; text-align: center; display: flex;
-    align-items: center; justify-content: center; border-right: 1px solid #000; padding: 0 2px;
-  }
-  .card .title-row .machine-label {
-    flex: 1; text-align: center; font-weight: 500; padding: 0 2px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .card .title-row .machine-box { flex: 1; border-left: 1px solid #000; display: flex; align-items: center; justify-content: center; }
-
-  .card .info-row { display: flex; border-bottom: 1px solid #000; height: 4mm; flex: 0 0 auto; }
-  .card .info-row .cell { flex: 1; display: flex; align-items: center; border-right: 1px solid #000; padding: 0 2px; }
-  .card .info-row .cell:last-child { border-right: none; }
-  .card .info-row .cell .lbl { font-weight: 500; white-space: nowrap; }
-  .card .info-row .cell .val {
-    flex: 1; text-align: center; font-weight: 700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-  }
-  .card .info-row .cell .val[contenteditable="true"] { cursor: text; }
-  .card .info-row .cell .val[contenteditable="true"]:hover,
-  .card .info-row .cell .val[contenteditable="true"]:focus { outline: 1px dashed #1b5fa8; background: #eef5ff; }
-
-  .card table { border-collapse: collapse; width: 100%; flex: 1 1 auto; table-layout: fixed; }
-  .card table th, .card table td { border: 1px solid #000; text-align: center; padding: 0.5px; overflow: hidden; }
-  .card table thead th { font-weight: 500; font-size: 6px; line-height: 1.0; height: 5mm; }
-  .card table tbody tr { height: 3.6mm; }
-  .card table tbody tr.capacity-row td {
-    font-weight: 700; font-size: 5px; height: 3.5mm;
-    border: 1px solid #000;
-  }
-  .card table tbody td.pib70, .card table tbody td.pib100, .card table tbody td.pib120 { font-weight: 700; color: #14532d; }
-  .card table tbody td.prod70, .card table tbody td.prod100, .card table tbody td.prod120 { font-weight: 700; color: #1b3a6b; }
-  .card table tfoot tr:first-child td {
-    font-weight: 700; font-size: 5px; padding: 0; height: 3.5mm;
-    border-top: 1.5px solid #000; border-bottom: 1.5px solid #000;
-  }
-  .card table tfoot tr:last-child td { height: 6mm; border-bottom: 1.5px solid #000; }
-  .card .footnote { font-size: 4.3px; text-align: center; padding: 0.5px; border-top: 1px solid #000; flex: 0 0 auto; }
-
-  @media print {
-    html, body { background: #fff; padding: 0; margin: 0; }
-    .controls, .param-panel, .page-nav { display: none; }
-    #pagesContainer .page {
-      display: grid !important; border: none; margin: 0; width: 100%; height: 100%; page-break-after: always;
-    }
-    #pagesContainer .page:last-child { page-break-after: auto; }
-    @page { size: A4 landscape; margin: 5mm; }
-  }
+:root{
+  --navy:#1B2A47;--navy2:#253a5e;--red:#C8102E;--red-light:#F5E6E9;
+  --bg:#F0F2F5;--card:#FFF;--border:#E2E6ED;
+  --text:#1B2A47;--muted:#6B7A99;
+  --green:#0E7C50;--green-light:#E6F5EF;
+  --amber:#B45309;--amber-light:#FEF3C7;
+  --shadow:0 1px 3px rgba(27,42,71,.07),0 6px 20px rgba(27,42,71,.08);
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 90px;}
+/* TOPBAR */
+.topbar{background:var(--navy);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(27,42,71,.25);}
+.topbar-left{display:flex;align-items:center;gap:12px;min-width:0;}
+.logo-text{color:#fff;font-weight:800;font-size:17px;letter-spacing:.5px;white-space:nowrap;}
+.topbar-sep{width:1px;height:26px;background:rgba(255,255,255,.2);flex-shrink:0;}
+.topbar-sub{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.help-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:7px 13px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.help-btn:hover{background:rgba(255,255,255,.2);}
+.page-wrap{padding:18px 14px;}
+@media(min-width:760px){.page-wrap{padding:26px;max-width:1120px;margin:0 auto;}}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-bar{width:4px;height:18px;background:var(--red);border-radius:2px;}
+.sec-title{font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.5px;text-transform:uppercase;}
+.sec-title small{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;font-size:11px;margin-left:6px;}
+/* CARD */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:20px 18px;margin-bottom:18px;}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(min-width:760px){.grid4{grid-template-columns:1fr 1fr 1fr 1fr;}}
+.grid3{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(min-width:760px){.grid3{grid-template-columns:1fr 1fr 1fr;}}
+.field-label{display:block;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;margin-bottom:6px;}
+.opt-tag{font-size:8px;font-weight:600;background:#EEF1F7;color:#94a3b8;border-radius:3px;padding:1px 5px;margin-left:4px;text-transform:none;letter-spacing:0;vertical-align:middle;}
+.field input,.field select{width:100%;background:#F8F9FB;border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;padding:12px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;}
+.field input:focus,.field select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,42,71,.1);background:#fff;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7A99' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer;}
+.field-opt input{border-style:dashed;}
+.field-opt input:focus{border-style:solid;}
+/* FILE UPLOAD */
+.upload-zone{border:2px dashed #C5CFDF;border-radius:11px;background:#F8F9FB;padding:16px;text-align:center;cursor:pointer;transition:.2s;display:block;}
+.upload-zone:hover{border-color:var(--navy);background:#fff;}
+.upload-zone input{display:none;}
+.uz-icon{width:34px;height:34px;margin:0 auto 8px;color:var(--navy);}
+.uz-title{font-size:14px;font-weight:700;color:var(--navy);word-break:break-all;}
+.uz-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.upload-ok{border-color:var(--green);background:var(--green-light);}
+.upload-ok .uz-title,.upload-ok .uz-icon{color:var(--green);}
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;background:#F8F9FB;border:1px solid var(--border);border-radius:10px;flex-wrap:wrap;}
+.toggle-row .tr-txt{flex:1;min-width:180px;}
+.toggle-row .tr-main{font-size:13px;font-weight:700;color:var(--navy);}
+.toggle-row .tr-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;inset:0;background:#C5CFDF;transition:.2s;border-radius:26px;}
+.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background:#fff;transition:.2s;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.switch input:checked + .slider{background:var(--green);}
+.switch input:checked + .slider:before{transform:translateX(20px);}
+.toggle-state{font-size:12px;font-weight:800;color:var(--green);min-width:30px;}
+.divider{height:1px;background:var(--border);margin:18px 0;}
+/* CUSTOM DESIGN */
+.custom-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:15px 18px;cursor:pointer;font-family:inherit;transition:.2s;}
+.custom-toggle:hover{border-color:var(--navy);}
+.ct-left{display:flex;align-items:center;gap:11px;}
+.ct-icon{width:30px;height:30px;border-radius:8px;background:var(--red-light);color:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ct-title{font-size:14px;font-weight:800;color:var(--navy);}
+.ct-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.ct-chev{color:var(--muted);transition:transform .25s;}
+.custom-toggle.open .ct-chev{transform:rotate(180deg);}
+.custom-body{display:none;padding-top:16px;}
+.custom-body.open{display:block;animation:fade .2s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+.hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;}
+/* STATUS */
+.status{font-size:12px;font-weight:600;margin-top:10px;line-height:1.6;}
+.status.ok{color:var(--green);}
+.status.err{color:var(--red);}
+.status.info{color:var(--navy);}
+/* ACTION BAR */
+.action-bar{position:sticky;bottom:0;z-index:40;background:linear-gradient(to top,var(--bg) 70%,rgba(240,242,245,0));padding:14px 0 6px;margin-top:4px;}
+.action-inner{display:flex;gap:9px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;cursor:pointer;border-radius:11px;transition:.15s;-webkit-tap-highlight-color:transparent;border:none;}
+.btn-primary{flex:1 1 100%;padding:16px;background:var(--red);color:#fff;font-size:16px;box-shadow:0 4px 16px rgba(200,16,46,.32);}
+.btn-primary:hover{background:#a50d26;}
+.btn-primary:active{background:#8b0b21;}
+.btn-sec{flex:1;min-width:130px;padding:13px 14px;background:#fff;color:var(--navy);border:1.5px solid var(--border);font-size:13px;}
+.btn-sec:hover:not(:disabled){border-color:var(--navy);}
+.btn-share{flex:1;min-width:130px;padding:13px 14px;background:var(--navy);color:#fff;font-size:13px;}
+.btn-share:hover:not(:disabled){background:var(--navy2);}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+/* PAGE NAV */
+.result-zone{display:none;}
+.page-nav{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:11px;padding:9px 14px;margin-bottom:14px;box-shadow:var(--shadow);}
+.page-nav button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+.page-nav button:disabled{background:#C5CFDF;cursor:not-allowed;}
+.page-nav #pageIndicator{font-weight:800;font-size:13px;color:var(--navy);min-width:120px;text-align:center;}
+.render-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;}
+/* STICKER PAGES (A4 landscape) */
+#pagesContainer{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+#pagesContainer .page{display:none;}
+#pagesContainer .page.active{display:grid;}
+.page{
+  background:#fff;width:287mm;height:200mm;margin:0 auto 6mm;padding:3mm;
+  grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);
+  column-gap:1.5mm;row-gap:2mm;border:1px solid #999;overflow:hidden;
+  font-family:'Noto Sans Bengali','SolaimanLipi',sans-serif;
+}
+.card-st{border:1.25px solid #000;display:flex;flex-direction:column;font-size:7px;overflow:hidden;color:#000;}
+.card-st .title-row{display:flex;border-bottom:1px solid #000;height:5mm;flex:0 0 auto;}
+.card-st .title-row .title{flex:1.1;font-weight:700;font-size:9.5px;text-align:center;display:flex;align-items:center;justify-content:center;border-right:1px solid #000;padding:0 2px;}
+.card-st .title-row .machine-label{flex:1;text-align:center;font-weight:500;padding:0 2px;display:flex;align-items:center;justify-content:center;}
+.card-st .title-row .machine-box{flex:1;border-left:1px solid #000;display:flex;align-items:center;justify-content:center;}
+.card-st .info-row{display:flex;border-bottom:1px solid #000;height:4mm;flex:0 0 auto;}
+.card-st .info-row .cell{flex:1;display:flex;align-items:center;border-right:1px solid #000;padding:0 2px;}
+.card-st .info-row .cell:last-child{border-right:none;}
+.card-st .info-row .cell .lbl{font-weight:500;white-space:nowrap;}
+.card-st .info-row .cell .val{flex:1;text-align:center;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.card-st .info-row .cell .val[contenteditable="true"]{cursor:text;}
+.card-st .info-row .cell .val[contenteditable="true"]:hover,
+.card-st .info-row .cell .val[contenteditable="true"]:focus{outline:1px dashed #1b5fa8;background:#eef5ff;}
+.card-st table{border-collapse:collapse;width:100%;flex:1 1 auto;table-layout:fixed;}
+.card-st table th,.card-st table td{border:0.75px solid #000;text-align:center;padding:0.5px;overflow:hidden;}
+.card-st table thead th{font-weight:500;font-size:6px;line-height:1;height:5mm;}
+.card-st table tbody tr{height:3.6mm;}
+.card-st table tbody tr.cap-row td{font-weight:700;font-size:5px;height:3.5mm;}
+.card-st table tbody td.pib70,.card-st table tbody td.pib100,.card-st table tbody td.pib120{font-weight:700;color:#14532d;}
+.card-st table tbody td.prod70,.card-st table tbody td.prod100,.card-st table tbody td.prod120{font-weight:700;color:#1b3a6b;}
+.card-st table tfoot tr:first-child td{font-weight:700;font-size:5px;padding:0;height:3.5mm;}
+.card-st table tfoot tr:last-child td{height:6mm;}
+/* thick perimeter box around last 3 rows (capacity + 2 footer rows) */
+.card-st table tbody tr.cap-row td{border-top-width:1.8px;}
+.card-st table tbody tr.cap-row td:first-child{border-left-width:1.8px;}
+.card-st table tbody tr.cap-row td:last-child{border-right-width:1.8px;}
+.card-st table tfoot tr td:first-child{border-left-width:1.8px;}
+.card-st table tfoot tr td:last-child{border-right-width:1.8px;}
+.card-st table tfoot tr:last-child td{border-bottom-width:1.8px;}
+.card-st .footnote{font-size:4.3px;text-align:center;padding:0.5px;border-top:1px solid #000;flex:0 0 auto;}
+/* MODAL */
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(27,42,71,.55);z-index:200;padding:16px;overflow-y:auto;}
+.modal-mask.open{display:flex;align-items:flex-start;justify-content:center;}
+.modal{background:#fff;border-radius:16px;max-width:560px;width:100%;margin:24px 0;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;font-family:'Noto Sans Bengali','Plus Jakarta Sans',sans-serif;}
+.modal-head{background:var(--navy);color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+.modal-head h2{font-size:17px;font-weight:800;}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;line-height:1;}
+.modal-close:hover{background:rgba(255,255,255,.28);}
+.modal-body{padding:20px;max-height:70vh;overflow-y:auto;}
+.guide-step{display:flex;gap:12px;margin-bottom:16px;}
+.gs-num{width:28px;height:28px;border-radius:8px;background:var(--red);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Roboto Mono',monospace;}
+.gs-txt{font-size:13.5px;line-height:1.7;color:var(--text);}
+.gs-txt b{color:var(--navy);}
+.guide-feat{background:#F8F9FB;border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:6px;}
+.guide-feat h3{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.guide-feat li{font-size:12.5px;line-height:1.8;color:var(--text);margin-left:16px;}
+.helpline{margin-top:16px;background:var(--red-light);border:1px solid #F0B8C2;border-radius:10px;padding:13px 15px;font-size:13px;color:var(--red);font-weight:700;text-align:center;}
+.helpline span{font-family:'Roboto Mono',monospace;font-size:16px;}
+/* FOOTER */
+.footer{text-align:center;padding:16px;}
+.footer-in{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:11px;color:var(--muted);font-weight:600;}
+.fdot{width:5px;height:5px;background:var(--red);border-radius:50%;}
+/* PRINT fallback */
+@media print{
+  body{background:#fff;padding:0;}
+  .topbar,.card,.action-bar,.page-nav,.render-hint,.footer,.modal-mask{display:none!important;}
+  .result-zone{display:block!important;}
+  #pagesContainer .page{display:grid!important;border:none;margin:0;width:100%;height:100%;page-break-after:always;}
+  #pagesContainer .page:last-child{page-break-after:auto;}
+  @page{size:A4 landscape;margin:5mm;}
+}
 </style>
 </head>
 <body>
-
-  <div class="controls">
-    <div><label for="buyerInput">বায়ার:</label><input id="buyerInput" type="text" placeholder="Buyer name"></div>
-    <div><label for="targetInput">টার্গেট:</label><input id="targetInput" type="text" placeholder="Target"></div>
-    <div><label for="styleInput">স্টাইল:</label><input id="styleInput" type="text" placeholder="Style"></div>
-    <button onclick="applyAll()">Apply to All Cards</button>
-    <button onclick="window.print()">Print / Export PDF (Selected Pages)</button>
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo-text">SNOWTEX</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-sub">Capacity Sticker Generator</span>
   </div>
+  <button class="help-btn" onclick="openGuide()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    ব্যবহার নির্দেশিকা
+  </button>
+</div>
 
-  <div class="controls">
-    <div>
-      <label for="excelInput">Upload Excel OP_Process_Skill_Tag_Report</label>
+<div class="page-wrap">
+
+  <!-- CARD 1: SETUP + PARAMETERS -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-bar"></div><span class="sec-title">Setup &amp; Parameters <small>Excel আপলোড ও পলিসি ইনপুট</small></span></div>
+
+    <label class="upload-zone" id="uploadZone">
       <input id="excelInput" type="file" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
-    </div>
-    <div id="uploadStatus"></div>
-    <div style="display:flex; align-items:center; gap:8px;">
-      <label for="nameToggle" style="margin:0;">অপারেটরের নাম Process Tag থেকে নিন:</label>
+      <svg class="uz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="uz-title" id="uzTitle">Upload OP Process Skill Tag Report</div>
+      <div class="uz-sub" id="uzSub">Tap to choose the .xlsx file (Machine no, Name, ID, SMV auto-load)</div>
+    </label>
+
+    <div class="toggle-row">
+      <div class="tr-txt">
+        <div class="tr-main">Take operator name from Process Tag</div>
+        <div class="tr-sub">ON: নাম (আইডি) Excel থেকে অটো বসবে। OFF: নাম ঘর খালি থাকবে, হাতে লিখবেন।</div>
+      </div>
       <label class="switch">
-        <input type="checkbox" id="nameToggle" checked onchange="refreshNameFields()">
+        <input type="checkbox" id="nameToggle" checked onchange="onNameToggle()">
         <span class="slider"></span>
       </label>
-      <span id="nameToggleState" style="font-size:12px;font-weight:700;color:#1b5fa8;">ON</span>
+      <span class="toggle-state" id="nameToggleState">ON</span>
     </div>
-    <div style="font-size:12px;color:#555;width:100%;">
-      মেশিন নং / এস.এম.ভি / নাম (আইডি) ঘরগুলোতে সরাসরি ক্লিক করে হাতে টাইপ করা যাবে (manual entry), অথবা উপরে Excel আপলোড করলে স্বয়ংক্রিয়ভাবে পূরণ হবে (automatic entry, সব workstation-এর জন্য একাধিক পেজ তৈরি হবে).<br>
-      টগল OFF করলে নাম (আইডি) ঘর সবসময় খালি থাকবে, হাতে টাইপ করতে হবে। ON করলে Excel থেকে অটো আসবে।
-    </div>
-  </div>
 
-  <div class="controls">
-    <div style="flex:1 1 100%;">
-      <label for="machineSelectInput">মেশিন নং সিলেক্ট করুন (শুধু এগুলোই প্রিন্ট হবে)</label><br>
-      <input id="machineSelectInput" class="wide" type="text" placeholder="যেমন: 5,10,13 or 5-10,13">
-      <button onclick="applyMachineSelection()">Apply Selection</button>
-      <button class="secondary" onclick="clearMachineSelection()">Show All</button>
-    </div>
-    <div id="selectStatus"></div>
-  </div>
+    <div class="divider"></div>
 
-  <div class="param-panel">
-    <h3>INPUT PARAMETERS &mdash; PIB Policy</h3>
-    <div class="param-grid">
-      <div class="param-field"><label for="pSmv">SMV (Style)</label><input id="pSmv" type="number" step="0.01" placeholder="e.g. 42"></div>
-      <div class="param-field">
-        <label for="pBuyerType">BUYER TYPE</label>
+    <div class="sec-head"><div class="sec-bar"></div><span class="sec-title">Input Parameters <small>PIB পলিসি</small></span></div>
+    <div class="grid4">
+      <div class="field">
+        <label class="field-label">SMV <span class="opt-tag">auto from Excel</span></label>
+        <input id="pSmv" type="number" step="0.01" min="0.01" inputmode="decimal" placeholder="e.g. 42">
+      </div>
+      <div class="field">
+        <label class="field-label">Buyer Type</label>
         <select id="pBuyerType">
           <option value="">Select</option>
           <option value="special">Special Buyer (max 65%)</option>
           <option value="normal">Normal Buyer (max 75%)</option>
         </select>
       </div>
-      <div class="param-field">
-        <label for="pStyleType">STYLE TYPE</label>
+      <div class="field">
+        <label class="field-label">Style Type</label>
         <select id="pStyleType">
           <option value="">Select</option>
           <option value="new">New</option>
           <option value="repeat">Repeat</option>
         </select>
       </div>
-      <div class="param-field"><label for="pTotalDays">TOTAL DAYS <span class="opt-tag">optional</span></label><input id="pTotalDays" type="number" min="1" max="7" placeholder="defaults to LC Days"></div>
+      <div class="field field-opt">
+        <label class="field-label">Total Days <span class="opt-tag">optional</span></label>
+        <input id="pTotalDays" type="number" min="1" max="7" inputmode="numeric" placeholder="defaults to LC Days">
+      </div>
     </div>
-    <div class="param-actions">
-      <button onclick="calculatePIB()">Calculate &amp; Apply PIB to All Cards</button>
-      <div id="policyStatus"></div>
+    <div class="status info" id="uploadStatus"></div>
+  </div>
+
+  <!-- CARD 2: CUSTOM DESIGN -->
+  <div class="card" style="padding:14px;">
+    <button class="custom-toggle" id="customToggle" onclick="toggleCustom()">
+      <div class="ct-left">
+        <div class="ct-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+        <div><div class="ct-title">Custom Design <span style="font-size:10px;font-weight:600;color:var(--muted);">(optional)</span></div><div class="ct-sub">Buyer, Style, Target%, নির্দিষ্ট মেশিন ও খালি স্টিকার</div></div>
+      </div>
+      <svg class="ct-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="custom-body" id="customBody">
+      <div class="grid3">
+        <div class="field"><label class="field-label">Buyer Name</label><input id="cBuyer" type="text" placeholder="auto from Excel"></div>
+        <div class="field"><label class="field-label">Style Name</label><input id="cStyle" type="text" placeholder="auto from Excel"></div>
+        <div class="field"><label class="field-label">Target % <span class="opt-tag">optional</span></label><input id="cTarget" type="text" placeholder="e.g. 30%"></div>
+      </div>
+      <div class="grid3" style="margin-top:12px;">
+        <div class="field" style="grid-column:1 / -1;">
+          <label class="field-label">Custom Machine Numbers <span class="opt-tag">only these will print</span></label>
+          <input id="cMachines" type="text" placeholder="e.g. 5,10,13 or 5-10,13  (blank = all machines)">
+          <div class="hint">নির্দিষ্ট মেশিন কার্ড দরকার হলে লিখুন। খালি রাখলে সব মেশিন আসবে।</div>
+        </div>
+      </div>
+      <div class="grid3" style="margin-top:12px;">
+        <div class="field">
+          <label class="field-label">Blank Stickers <span class="opt-tag">optional</span></label>
+          <input id="cBlanks" type="number" min="0" max="120" inputmode="numeric" placeholder="e.g. 3">
+          <div class="hint">শেষে এতগুলো সম্পূর্ণ খালি স্টিকার যোগ হবে, হাতে লেখার জন্য।</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="page-nav">
-    <button id="prevPageBtn" onclick="prevPage()">&#9664; Prev Page</button>
-    <span id="pageIndicator">Page 1 of 1</span>
-    <button id="nextPageBtn" onclick="nextPage()">Next Page &#9654;</button>
+  <!-- ACTION BAR -->
+  <div class="action-bar">
+    <div class="action-inner">
+      <button class="btn btn-primary" onclick="generateStickers()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Create Capacity Sticker
+      </button>
+      <button class="btn btn-sec" id="pdfBtn" onclick="downloadPDF()" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Download PDF
+      </button>
+      <button class="btn btn-share" id="shareBtn" onclick="sharePDF()" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+        Share
+      </button>
+    </div>
   </div>
 
-  <div id="pagesContainer"></div>
+  <!-- RESULT -->
+  <div class="result-zone" id="resultZone">
+    <div class="page-nav">
+      <button id="prevPageBtn" onclick="prevPage()">&#9664; Prev</button>
+      <span id="pageIndicator">Page 1 of 1</span>
+      <button id="nextPageBtn" onclick="nextPage()">Next &#9654;</button>
+    </div>
+    <div class="render-hint">A4 landscape, 12 stickers per page. যেকোনো স্টিকারে মেশিন নং / এস.এম.ভি / নাম ক্লিক করে বদলানো যাবে।</div>
+    <div id="pagesContainer"></div>
+  </div>
+
+  <div class="footer"><div class="footer-in"><span class="fdot"></span>&copy; Snowtex CI Team &nbsp;|&nbsp; Helpline IP 2803</div></div>
+</div>
+
+<!-- USER GUIDE MODAL -->
+<div class="modal-mask" id="guideMask" onclick="if(event.target===this)closeGuide()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>ব্যবহার নির্দেশিকা</h2>
+      <button class="modal-close" onclick="closeGuide()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="guide-step"><div class="gs-num">1</div><div class="gs-txt"><b>Excel আপলোড করুন।</b> "Upload OP Process Skill Tag Report" এ ট্যাপ করে <b>OP_Process_Skill_Tag_Report</b> ফাইলটি দিন। মেশিন নং, অপারেটরের নাম, আইডি ও SMV অটো লোড হবে। মোট SMV উপরের SMV ঘরে বসে যাবে।</div></div>
+      <div class="guide-step"><div class="gs-num">2</div><div class="gs-txt"><b>নাম টগল।</b> ON রাখলে অপারেটরের নাম Excel থেকে আসবে। OFF করলে নাম ঘর খালি থাকবে, হাতে লিখবেন।</div></div>
+      <div class="guide-step"><div class="gs-num">3</div><div class="gs-txt"><b>Input Parameters দিন।</b> SMV (দরকার হলে বদলান), Buyer Type, Style Type, Total Days (ঐচ্ছিক)। এগুলো দিয়ে PIB টাকা ও প্রোডাকশন হিসাব হয়।</div></div>
+      <div class="guide-step"><div class="gs-num">4</div><div class="gs-txt"><b>Custom Design (ঐচ্ছিক)।</b> বাটনে ট্যাপ করে খুলুন। এখানে Buyer, Style, Target% বদলাতে পারবেন, নির্দিষ্ট মেশিন নং সিলেক্ট করতে পারবেন, এবং শেষে কয়েকটি খালি স্টিকার যোগ করতে পারবেন।</div></div>
+      <div class="guide-step"><div class="gs-num">5</div><div class="gs-txt"><b>Create Capacity Sticker</b> চাপুন। A4 সাইজে প্রতি পেজে ১২টি স্টিকার তৈরি হবে। Prev / Next দিয়ে পেজ দেখুন।</div></div>
+      <div class="guide-step"><div class="gs-num">6</div><div class="gs-txt"><b>প্রয়োজনে এডিট।</b> যেকোনো স্টিকারে মেশিন নং, এস.এম.ভি বা নাম ক্লিক করে বদলান। কোনো স্টিকারের SMV বদলালে শুধু ঐ স্টিকারের হিসাব আপডেট হবে।</div></div>
+      <div class="guide-step"><div class="gs-num">7</div><div class="gs-txt"><b>Download PDF</b> দিয়ে সব পেজ এক PDF এ সেভ করুন, অথবা <b>Share</b> দিয়ে সরাসরি WhatsApp/অন্য অ্যাপে পাঠান।</div></div>
+      <div class="guide-feat">
+        <h3>সব সুবিধা</h3>
+        <ul>
+          <li>এক পেজে ১২টি স্টিকার, সব মেশিন একাধিক পেজে ভাগ হয়ে যায়</li>
+          <li>নির্দিষ্ট মেশিন নং সিলেক্ট করে শুধু সেগুলোই প্রিন্ট</li>
+          <li>খালি স্টিকার যোগ করার অপশন</li>
+          <li>নাম অটো / হাতে লেখার টগল</li>
+          <li>PIB টাকা ও প্রোডাকশন (৭০% / ১০০% / ১২০%) অটো হিসাব</li>
+          <li>ক্যাপাসিটি ও লাইন ইফিসিয়েন্সি ঘর সবসময় খালি, হাতে লেখার জন্য</li>
+          <li>মোবাইল থেকে PDF শেয়ার</li>
+        </ul>
+      </div>
+      <div class="helpline">Helpline IP <span>2803</span></div>
+    </div>
+  </div>
+</div>
 
 <script>
-let allMachines = [];
+/* ---------- state ---------- */
+var allMachines = [];
+var lastDayResults = null;
+var hasGenerated = false;
 
-function buildDayRow(dayNum, label) {
-  return '<tr data-day="' + dayNum + '"><td>' + label + '</td>' +
-    '<td class="prod70"></td><td class="pib70"></td>' +
-    '<td class="prod100"></td><td class="pib100"></td>' +
+function $(id){return document.getElementById(id);}
+
+/* ---------- guide modal ---------- */
+function openGuide(){$('guideMask').classList.add('open');}
+function closeGuide(){$('guideMask').classList.remove('open');}
+
+/* ---------- custom panel ---------- */
+function toggleCustom(){
+  $('customToggle').classList.toggle('open');
+  $('customBody').classList.toggle('open');
+}
+
+/* ---------- name toggle ---------- */
+function isNameToggleOn(){var t=$('nameToggle');return t?t.checked:true;}
+function onNameToggle(){
+  $('nameToggleState').textContent=isNameToggleOn()?'ON':'OFF';
+  refreshNameFields();
+}
+
+/* First-name rule: take first word; if first word length < 5 chars (Mst., Md., etc), take next word. */
+function computeNameId(m){
+  var full=(m.opName||'').trim();
+  var idTail=m.opId?String(m.opId).slice(-5):'';
+  var name='';
+  if(full){
+    var parts=full.split(/\s+/).filter(Boolean);
+    if(parts.length){
+      var first=parts[0];
+      if(first.length<5 && parts.length>1) name=parts[1];
+      else name=first;
+    }
+  }
+  if(name && idTail) return name+' ('+idTail+')';
+  if(name) return name;
+  return '';
+}
+
+function refreshNameFields(){
+  var on=isNameToggleOn();
+  document.querySelectorAll('.card-st').forEach(function(card){
+    var el=card.querySelector('.nameid-val');
+    if(!el) return;
+    if(on){
+      el.textContent=computeNameId({opName:card.dataset.opName||'',opId:card.dataset.opId||''});
+    } else { el.textContent=''; }
+  });
+}
+
+/* ---------- sticker templates ---------- */
+function buildDayRow(dayNum,label){
+  return '<tr data-day="'+dayNum+'"><td>'+label+'</td>'+
+    '<td class="prod70"></td><td class="pib70"></td>'+
+    '<td class="prod100"></td><td class="pib100"></td>'+
     '<td class="prod120"></td><td class="pib120"></td></tr>';
 }
-
-function buildCardHTML() {
-  return '' +
-    '<div class="card">' +
-      '<div class="title-row">' +
-        '<div class="title">পিআইবি কার্ড</div>' +
-        '<div class="machine-label">মেশিন নং:</div>' +
-        '<div class="machine-box"><span class="val machine-val" contenteditable="true"></span></div>' +
-      '</div>' +
-      '<div class="info-row">' +
-        '<div class="cell"><span class="lbl">এস.এম.ভি:</span><span class="val smv-val" contenteditable="true"></span></div>' +
-        '<div class="cell"><span class="lbl">টার্গেট:</span><span class="val target-val"></span></div>' +
-        '<div class="cell"><span class="lbl">বায়ার:</span><span class="val buyer-val"></span></div>' +
-      '</div>' +
-      '<div class="info-row">' +
-        '<div class="cell"><span class="lbl">নাম (আইডি):</span><span class="val nameid-val" contenteditable="true"></span></div>' +
-        '<div class="cell"><span class="lbl">স্টাইল:</span><span class="val style-val"></span></div>' +
-      '</div>' +
-      '<table>' +
-        '<thead><tr>' +
-          '<th style="width:10%">দিন</th>' +
-          '<th>প্রোডাকশন<br>(৭০%)</th><th>পি.আই.বি</th>' +
-          '<th>প্রোডাকশন<br>(১০০%)</th><th>পি.আই.বি</th>' +
-          '<th>প্রোডাকশন<br>(১২০%)</th><th>পি.আই.বি</th>' +
-        '</tr></thead>' +
-        '<tbody>' +
-          buildDayRow('1', '\u09E7\u09AE') +
-          buildDayRow('2', '\u09E8\u09DF') +
-          buildDayRow('3', '\u09E9\u09DF') +
-          buildDayRow('4', '\u09EA\u09B0\u09CD\u09A5') +
-          buildDayRow('5', '\u09EB\u09AE') +
-          buildDayRow('6', '\u09EC\u09B7\u09CD\u09A0') +
-          buildDayRow('7', '\u09ED\u09AE') +
-          '<tr class="capacity-row"><td colspan="3">\u0995\u09CD\u09AF\u09BE\u09AA\u09BE\u09B8\u09BF\u099F\u09BF</td><td colspan="4"></td></tr>' +
-        '</tbody>' +
-        '<tfoot>' +
-          '<tr>' +
-            '<td>লাইন ইফিসিয়েন্সি</td>' +
-            '<td>প্রোডাকশন</td><td>পি আই বি</td>' +
-            '<td>প্রোডাকশন</td><td>পি আই বি</td>' +
-            '<td>প্রোডাকশন</td><td>পি আই বি</td>' +
-          '</tr>' +
-          '<tr><td></td><td class="foot-prod70"></td><td class="foot-pib70"></td><td class="foot-prod100"></td><td class="foot-pib100"></td><td class="foot-prod120"></td><td class="foot-pib120"></td></tr>' +
-        '</tfoot>' +
-      '</table>' +
-      '<div class="footnote">ইফিসিয়েন্সি ও ডিফেক্ট রেটের উপর পি আই বি এমাউন্ট পরিবর্তনশীল</div>' +
-    '</div>';
+function buildCardHTML(){
+  return ''+
+  '<div class="card-st">'+
+    '<div class="title-row">'+
+      '<div class="title">পিআইবি কার্ড</div>'+
+      '<div class="machine-label">মেশিন নং:</div>'+
+      '<div class="machine-box"><span class="val machine-val" contenteditable="true"></span></div>'+
+    '</div>'+
+    '<div class="info-row">'+
+      '<div class="cell"><span class="lbl">এস.এম.ভি:</span><span class="val smv-val" contenteditable="true"></span></div>'+
+      '<div class="cell"><span class="lbl">টার্গেট:</span><span class="val target-val"></span></div>'+
+      '<div class="cell"><span class="lbl">বায়ার:</span><span class="val buyer-val"></span></div>'+
+    '</div>'+
+    '<div class="info-row">'+
+      '<div class="cell"><span class="lbl">নাম (আইডি):</span><span class="val nameid-val" contenteditable="true"></span></div>'+
+      '<div class="cell"><span class="lbl">স্টাইল:</span><span class="val style-val"></span></div>'+
+    '</div>'+
+    '<table>'+
+      '<thead><tr>'+
+        '<th style="width:10%">দিন</th>'+
+        '<th>প্রোডাকশন<br>(৭০%)</th><th>পি.আই.বি</th>'+
+        '<th>প্রোডাকশন<br>(১০০%)</th><th>পি.আই.বি</th>'+
+        '<th>প্রোডাকশন<br>(১২০%)</th><th>পি.আই.বি</th>'+
+      '</tr></thead>'+
+      '<tbody>'+
+        buildDayRow('1','১ম')+buildDayRow('2','২য়')+buildDayRow('3','৩য়')+
+        buildDayRow('4','৪র্থ')+buildDayRow('5','৫ম')+buildDayRow('6','৬ষ্ঠ')+buildDayRow('7','৭ম')+
+        '<tr class="cap-row"><td colspan="3">ক্যাপাসিটি</td><td colspan="4"></td></tr>'+
+      '</tbody>'+
+      '<tfoot>'+
+        '<tr>'+
+          '<td>লাইন ইফিসিয়েন্সি</td>'+
+          '<td>প্রোডাকশন</td><td>পি আই বি</td>'+
+          '<td>প্রোডাকশন</td><td>পি আই বি</td>'+
+          '<td>প্রোডাকশন</td><td>পি আই বি</td>'+
+        '</tr>'+
+        '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'+
+      '</tfoot>'+
+    '</table>'+
+    '<div class="footnote">ইফিসিয়েন্সি ও ডিফেক্ট রেটের উপর পি আই বি এমাউন্ট পরিবর্তনশীল</div>'+
+  '</div>';
 }
 
-let currentPageIndex = 0;
-
-function buildPagesFromCount(n) {
-  const container = document.getElementById('pagesContainer');
-  container.innerHTML = '';
-  const total = Math.max(1, Math.ceil(n / 12));
-  for (let p = 0; p < total; p++) {
-    const pageDiv = document.createElement('div');
-    pageDiv.className = 'page';
-    const cardsHere = Math.min(12, n - p * 12);
-    let html = '';
-    for (let c = 0; c < cardsHere; c++) html += buildCardHTML();
-    pageDiv.innerHTML = html;
+/* ---------- pages ---------- */
+var currentPageIndex=0;
+function buildPagesFromCount(n){
+  var container=$('pagesContainer');
+  container.innerHTML='';
+  var total=Math.max(1,Math.ceil(n/12));
+  for(var p=0;p<total;p++){
+    var pageDiv=document.createElement('div');
+    pageDiv.className='page';
+    var cardsHere=Math.min(12,n-p*12);
+    var html='';
+    for(var c=0;c<cardsHere;c++) html+=buildCardHTML();
+    pageDiv.innerHTML=html;
     container.appendChild(pageDiv);
   }
   showPage(0);
 }
-
-function showPage(idx) {
-  const pages = document.querySelectorAll('#pagesContainer .page');
-  if (pages.length === 0) return;
-  if (idx < 0) idx = 0;
-  if (idx > pages.length - 1) idx = pages.length - 1;
-  pages.forEach(function(p, i) { p.classList.toggle('active', i === idx); });
-  document.getElementById('pageIndicator').textContent = 'Page ' + (idx + 1) + ' of ' + pages.length;
-  document.getElementById('prevPageBtn').disabled = (idx === 0);
-  document.getElementById('nextPageBtn').disabled = (idx === pages.length - 1);
-  currentPageIndex = idx;
+function showPage(idx){
+  var pages=document.querySelectorAll('#pagesContainer .page');
+  if(!pages.length) return;
+  if(idx<0) idx=0;
+  if(idx>pages.length-1) idx=pages.length-1;
+  pages.forEach(function(p,i){p.classList.toggle('active',i===idx);});
+  $('pageIndicator').textContent='Page '+(idx+1)+' of '+pages.length;
+  $('prevPageBtn').disabled=(idx===0);
+  $('nextPageBtn').disabled=(idx===pages.length-1);
+  currentPageIndex=idx;
 }
+function nextPage(){var pages=document.querySelectorAll('#pagesContainer .page');if(currentPageIndex<pages.length-1)showPage(currentPageIndex+1);}
+function prevPage(){if(currentPageIndex>0)showPage(currentPageIndex-1);}
 
-function nextPage() {
-  const pages = document.querySelectorAll('#pagesContainer .page');
-  if (currentPageIndex < pages.length - 1) showPage(currentPageIndex + 1);
+/* ---------- PIB policy ---------- */
+function getLCDays(smv,styleType){
+  var r;
+  if(smv<=40.99) r={n:4,rp:3};
+  else if(smv<=65.99) r={n:5,rp:4};
+  else if(smv<=90.99) r={n:6,rp:5};
+  else r={n:7,rp:6};
+  return styleType==='repeat'?r.rp:r.n;
 }
-
-function prevPage() {
-  if (currentPageIndex > 0) showPage(currentPageIndex - 1);
+var TABLE02_SPECIAL={3:[30,60,65,65,65,65,65,65,65,65],4:[20,40,60,65,65,65,65,65,65,65],5:[20,40,50,60,65,65,65,65,65,65],6:[15,25,35,45,55,65,65,65,65,65],7:[15,25,35,45,55,60,65,65,65,65]};
+var TABLE03_NORMAL={3:[30,60,75,75,75,75,75,75,75,75],4:[25,45,65,75,75,75,75,75,75,75],5:[20,40,55,65,75,75,75,75,75,75],6:[20,40,55,65,70,75,75,75,75,75],7:[15,25,35,50,65,70,75,75,75,75]};
+function getLineTargetEff(lcDays,day,buyerType){
+  var table=buyerType==='special'?TABLE02_SPECIAL:TABLE03_NORMAL;
+  var col=table[lcDays]||table[7];
+  return col[Math.min(day,10)-1];
 }
-
-function computeNameId(m) {
-  const lastName = m.opName ? m.opName.trim().split(/\s+/).pop() : '';
-  const idTail = m.opId ? m.opId.slice(-5) : '';
-  if (lastName && idTail) return lastName + ' (' + idTail + ')';
-  if (lastName) return lastName;
-  return '';
+function getPIB(op){
+  var p=30+(op-25)*0.40;
+  return {pib70:Math.round(p*0.70*100)/100,pib100:Math.round(p*100)/100,pib120:Math.round(p*1.20*100)/100};
 }
-
-function isNameToggleOn() {
-  const t = document.getElementById('nameToggle');
-  return t ? t.checked : true;
+function calcProduction(opSmv,op){
+  if(!opSmv||opSmv<=0) return null;
+  var prod100=Math.round((60/opSmv)*(op/100));
+  return {prod70:Math.round(prod100*0.70),prod100:prod100,prod120:Math.round(prod100*1.20)};
 }
-
-function fillCardsFromMachines(machinesList) {
-  buildPagesFromCount(machinesList.length);
-  const cards = document.querySelectorAll('.card');
-  const takeNames = isNameToggleOn();
-  machinesList.forEach(function(m, idx) {
-    const card = cards[idx];
-    if (!card) return;
-    card.querySelector('.machine-val').textContent = m.mc;
-    card.querySelector('.smv-val').textContent = m.smv ? m.smv.toFixed(2) : '';
-    card.querySelector('.nameid-val').textContent = takeNames ? computeNameId(m) : '';
-    card.dataset.opName = m.opName || '';
-    card.dataset.opId = m.opId || '';
-  });
-  applyAll();
+function buildDayResults(){
+  var smv=parseFloat($('pSmv').value);
+  var buyerType=$('pBuyerType').value;
+  var styleType=$('pStyleType').value;
+  if(isNaN(smv)||!buyerType||!styleType) return null;
+  var cap=buyerType==='special'?65:75;
+  var lcDays=getLCDays(smv,styleType);
+  var totalDays=parseInt($('pTotalDays').value);
+  if(!totalDays||totalDays<1) totalDays=lcDays;
+  if(totalDays>7) totalDays=7;
+  var res=[];
+  for(var day=1;day<=totalDays;day++){
+    var lineEff=getLineTargetEff(lcDays,day,buyerType);
+    var op=Math.min(lineEff+10,cap);
+    var pib=getPIB(op);
+    res.push({day:day,operatorTarget:op,pib70:pib.pib70,pib100:pib.pib100,pib120:pib.pib120});
+  }
+  return {rows:res,lcDays:lcDays,totalDays:totalDays,smv:smv};
 }
-
-function refreshNameFields() {
-  const stateLabel = document.getElementById('nameToggleState');
-  const on = isNameToggleOn();
-  if (stateLabel) { stateLabel.textContent = on ? 'ON' : 'OFF'; }
-  document.querySelectorAll('.card').forEach(function(card) {
-    const nameEl = card.querySelector('.nameid-val');
-    if (!nameEl) return;
-    if (on) {
-      const m = { opName: card.dataset.opName || '', opId: card.dataset.opId || '' };
-      nameEl.textContent = computeNameId(m);
+function applyDayResultsToCard(card){
+  var smvEl=card.querySelector('.smv-val');
+  var opSmv=smvEl?parseFloat((smvEl.textContent||'').trim()):NaN;
+  card.querySelectorAll('tbody tr[data-day]').forEach(function(tr){
+    var day=parseInt(tr.getAttribute('data-day'));
+    var result=lastDayResults?lastDayResults.filter(function(d){return d.day===day;})[0]:null;
+    var p70=tr.querySelector('.prod70'),p100=tr.querySelector('.prod100'),p120=tr.querySelector('.prod120');
+    var b70=tr.querySelector('.pib70'),b100=tr.querySelector('.pib100'),b120=tr.querySelector('.pib120');
+    if(result){
+      b70.textContent=result.pib70.toFixed(2);b100.textContent=result.pib100.toFixed(2);b120.textContent=result.pib120.toFixed(2);
+      var prod=calcProduction(opSmv,result.operatorTarget);
+      if(prod){p70.textContent=prod.prod70;p100.textContent=prod.prod100;p120.textContent=prod.prod120;}
+      else{p70.textContent='';p100.textContent='';p120.textContent='';}
     } else {
-      nameEl.textContent = '';
+      b70.textContent='';b100.textContent='';b120.textContent='';
+      p70.textContent='';p100.textContent='';p120.textContent='';
     }
   });
+  /* capacity row and line-efficiency footer stay empty for manual entry */
 }
 
-function parseSelectionInput(text) {
-  const wanted = new Set();
-  text.split(',').forEach(function(part) {
-    part = part.trim();
-    if (!part) return;
-    if (part.indexOf('-') > -1) {
-      const bounds = part.split('-').map(function(s){ return parseInt(s.trim(), 10); });
-      if (bounds.length === 2 && !isNaN(bounds[0]) && !isNaN(bounds[1])) {
-        const lo = Math.min(bounds[0], bounds[1]);
-        const hi = Math.max(bounds[0], bounds[1]);
-        for (let v = lo; v <= hi; v++) wanted.add(v);
+/* recompute a single sticker when its SMV is edited */
+function recomputeCard(card){ if(lastDayResults) applyDayResultsToCard(card); }
+$('pagesContainer').addEventListener('input',function(e){
+  var t=e.target;
+  if(t && t.classList && t.classList.contains('smv-val')){
+    var card=t.closest('.card-st');
+    if(card) recomputeCard(card);
+  }
+});
+
+/* ---------- meta (buyer/style/target) ---------- */
+function applyMeta(){
+  var buyer=($('cBuyer').value||'').trim();
+  var style=($('cStyle').value||'').trim();
+  var target=($('cTarget').value||'').trim();
+  document.querySelectorAll('.buyer-val').forEach(function(el){el.textContent=buyer;});
+  document.querySelectorAll('.style-val').forEach(function(el){el.textContent=style;});
+  document.querySelectorAll('.target-val').forEach(function(el){el.textContent=target;});
+}
+
+/* ---------- machine selection ---------- */
+function parseSelectionInput(text){
+  var wanted=new Set();
+  text.split(',').forEach(function(part){
+    part=part.trim();if(!part) return;
+    if(part.indexOf('-')>-1){
+      var b=part.split('-').map(function(s){return parseInt(s.trim(),10);});
+      if(b.length===2&&!isNaN(b[0])&&!isNaN(b[1])){
+        var lo=Math.min(b[0],b[1]),hi=Math.max(b[0],b[1]);
+        for(var v=lo;v<=hi;v++) wanted.add(v);
       }
-    } else {
-      const num = parseInt(part, 10);
-      if (!isNaN(num)) wanted.add(num);
-    }
+    } else { var num=parseInt(part,10); if(!isNaN(num)) wanted.add(num); }
   });
   return wanted;
 }
 
-function applyMachineSelection() {
-  const status = document.getElementById('selectStatus');
-  if (allMachines.length === 0) {
-    status.style.color = '#c0392b';
-    status.textContent = 'প্রথমে Excel ফাইল আপলোড করুন, তারপর মেশিন সিলেক্ট করুন।';
-    return;
+/* ---------- GENERATE ---------- */
+function generateStickers(){
+  var status=$('uploadStatus');
+  var list=allMachines.slice();
+  var selRaw=($('cMachines').value||'').trim();
+  var selNote='';
+  if(selRaw && allMachines.length){
+    var wanted=parseSelectionInput(selRaw);
+    list=allMachines.filter(function(m){return wanted.has(parseInt(m.mc,10));});
+    selNote=' | selected '+list.length+' of '+wanted.size+' requested';
   }
-  const raw = document.getElementById('machineSelectInput').value.trim();
-  if (!raw) {
-    status.style.color = '#c0392b';
-    status.textContent = 'মেশিন নং লিখুন, যেমন: 5,10,13';
-    return;
-  }
-  const wanted = parseSelectionInput(raw);
-  if (wanted.size === 0) {
-    status.style.color = '#c0392b';
-    status.textContent = 'বৈধ মেশিন নং পাওয়া যায়নি।';
-    return;
-  }
-  const filtered = allMachines.filter(function(m) { return wanted.has(parseInt(m.mc, 10)); });
-  if (filtered.length === 0) {
-    status.style.color = '#c0392b';
-    status.textContent = 'এই মেশিন নং(গুলো) Excel-এ পাওয়া যায়নি।';
-    return;
-  }
-  fillCardsFromMachines(filtered);
-  const pageCount = Math.max(1, Math.ceil(filtered.length / 12));
-  status.style.color = '#1b5fa8';
-  status.textContent = filtered.length + ' machine(s) selected (out of ' + wanted.size + ' requested), rearranged into ' + pageCount + ' page(s) of 12.';
-}
+  var blanks=parseInt($('cBlanks').value);
+  if(isNaN(blanks)||blanks<0) blanks=0;
+  var total=list.length+blanks;
+  if(total===0) total=12; /* fully manual: one blank page */
 
-function clearMachineSelection() {
-  document.getElementById('machineSelectInput').value = '';
-  const status = document.getElementById('selectStatus');
-  if (allMachines.length === 0) { status.textContent = ''; return; }
-  fillCardsFromMachines(allMachines);
-  const pageCount = Math.max(1, Math.ceil(allMachines.length / 12));
-  status.style.color = '#1b5fa8';
-  status.textContent = 'Showing all ' + allMachines.length + ' machine(s) across ' + pageCount + ' page(s).';
-}
-
-buildPagesFromCount(12);
-
-function getLCDays(smv, styleType) {
-  let range;
-  if (smv <= 40.99) range = { newDays: 4, repeatDays: 3 };
-  else if (smv <= 65.99) range = { newDays: 5, repeatDays: 4 };
-  else if (smv <= 90.99) range = { newDays: 6, repeatDays: 5 };
-  else range = { newDays: 7, repeatDays: 6 };
-  return styleType === 'repeat' ? range.repeatDays : range.newDays;
-}
-
-const TABLE02_SPECIAL = {
-  3:  [30,60,65,65,65,65,65,65,65,65],
-  4:  [20,40,60,65,65,65,65,65,65,65],
-  5:  [20,40,50,60,65,65,65,65,65,65],
-  6:  [15,25,35,45,55,65,65,65,65,65],
-  7:  [15,25,35,45,55,60,65,65,65,65]
-};
-
-const TABLE03_NORMAL = {
-  3:  [30,60,75,75,75,75,75,75,75,75],
-  4:  [25,45,65,75,75,75,75,75,75,75],
-  5:  [20,40,55,65,75,75,75,75,75,75],
-  6:  [20,40,55,65,70,75,75,75,75,75],
-  7:  [15,25,35,50,65,70,75,75,75,75]
-};
-
-function getLineTargetEff(lcDays, day, buyerType) {
-  const table = buyerType === 'special' ? TABLE02_SPECIAL : TABLE03_NORMAL;
-  const col = table[lcDays] || table[7];
-  const idx = Math.min(day, 10) - 1;
-  return col[idx];
-}
-
-function getPIB(operatorTargetPct) {
-  const pib100 = 30 + (operatorTargetPct - 25) * 0.40;
-  return {
-    pib70: Math.round(pib100 * 0.70 * 100) / 100,
-    pib100: Math.round(pib100 * 100) / 100,
-    pib120: Math.round(pib100 * 1.20 * 100) / 100
-  };
-}
-
-function calcProduction(opSmv, operatorTargetPct) {
-  if (!opSmv || opSmv <= 0) return null;
-  const base = 60 / opSmv;
-  const prod100 = Math.round(base * (operatorTargetPct / 100));
-  return { prod70: Math.round(prod100 * 0.70), prod100: prod100, prod120: Math.round(prod100 * 1.20) };
-}
-
-function calculatePIB() {
-  const status = document.getElementById('policyStatus');
-  const smv = parseFloat(document.getElementById('pSmv').value);
-  const buyerType = document.getElementById('pBuyerType').value;
-  const styleType = document.getElementById('pStyleType').value;
-
-  if (isNaN(smv) || !buyerType || !styleType) {
-    status.textContent = 'দয়া করে SMV, Buyer Type ও Style Type পূরণ করুন।';
-    status.style.color = '#c0392b';
-    return;
-  }
-
-  const cap = buyerType === 'special' ? 65 : 75;
-  const lcDays = getLCDays(smv, styleType);
-
-  let totalDays = parseInt(document.getElementById('pTotalDays').value);
-  if (!totalDays || totalDays < 1) totalDays = lcDays;
-  if (totalDays > 7) totalDays = 7;
-
-  const dayResults = [];
-  for (let day = 1; day <= totalDays; day++) {
-    const lineEff = getLineTargetEff(lcDays, day, buyerType);
-    const operatorTarget = Math.min(lineEff + 10, cap);
-    const pib = getPIB(operatorTarget);
-    dayResults.push({ day: day, lineEff: lineEff, operatorTarget: operatorTarget, pib70: pib.pib70, pib100: pib.pib100, pib120: pib.pib120 });
-  }
-
-  document.querySelectorAll('.card').forEach(function(card) {
-    const smvSpanEl = card.querySelector('.smv-val');
-    if (smvSpanEl && !smvSpanEl.textContent.trim()) smvSpanEl.textContent = smv;
-    const opSmv = smvSpanEl ? parseFloat(smvSpanEl.textContent.trim()) : NaN;
-
-    card.querySelectorAll('tbody tr[data-day]').forEach(function(tr) {
-      const day = parseInt(tr.getAttribute('data-day'));
-      const result = dayResults.filter(function(d){ return d.day === day; })[0];
-      const prod70 = tr.querySelector('.prod70');
-      const prod100 = tr.querySelector('.prod100');
-      const prod120 = tr.querySelector('.prod120');
-      const pib70 = tr.querySelector('.pib70');
-      const pib100 = tr.querySelector('.pib100');
-      const pib120 = tr.querySelector('.pib120');
-      if (result) {
-        pib70.textContent = result.pib70.toFixed(2);
-        pib100.textContent = result.pib100.toFixed(2);
-        pib120.textContent = result.pib120.toFixed(2);
-        const prod = calcProduction(opSmv, result.operatorTarget);
-        if (prod) {
-          prod70.textContent = prod.prod70;
-          prod100.textContent = prod.prod100;
-          prod120.textContent = prod.prod120;
-        } else {
-          prod70.textContent = ''; prod100.textContent = ''; prod120.textContent = '';
-        }
-      } else {
-        pib70.textContent = ''; pib100.textContent = ''; pib120.textContent = '';
-        prod70.textContent = ''; prod100.textContent = ''; prod120.textContent = '';
-      }
-    });
-    // "লাইন ইফিসিয়েন্সি" footer row and "ক্যাপাসিটি" row are intentionally
-    // left untouched here — both must stay empty for manual handwritten entry.
+  buildPagesFromCount(total);
+  var cards=document.querySelectorAll('.card-st');
+  var takeNames=isNameToggleOn();
+  list.forEach(function(m,idx){
+    var card=cards[idx]; if(!card) return;
+    card.querySelector('.machine-val').textContent=m.mc;
+    card.querySelector('.smv-val').textContent=m.smv?m.smv.toFixed(2):'';
+    card.querySelector('.nameid-val').textContent=takeNames?computeNameId(m):'';
+    card.dataset.opName=m.opName||'';
+    card.dataset.opId=m.opId||'';
   });
 
-  const totalPib100 = dayResults.reduce(function(sum, d){ return sum + d.pib100; }, 0);
+  applyMeta();
+  var dr=buildDayResults();
+  lastDayResults=dr?dr.rows:null;
+  if(lastDayResults){
+    document.querySelectorAll('.card-st').forEach(applyDayResultsToCard);
+  }
 
-  status.style.color = '#1b5fa8';
-  status.textContent = 'LC Days: ' + lcDays + ' | Total Days used: ' + totalDays + ' | Day-wise Operator Target%: ' +
-    dayResults.map(function(d){ return 'Day' + d.day + '=' + d.operatorTarget + '%'; }).join(', ') +
-    ' | Total PIB @100%: ' + totalPib100.toFixed(2) + ' tk | সব কার্ডে পি.আই.বি ও প্রোডাকশন বসানো হয়েছে।';
+  hasGenerated=true;
+  $('pdfBtn').disabled=false;
+  $('shareBtn').disabled=false;
+  $('resultZone').style.display='block';
+
+  var pages=Math.max(1,Math.ceil(total/12));
+  if(dr){
+    status.className='status ok';
+    status.textContent='Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. LC Days '+dr.lcDays+', Total Days '+dr.totalDays+'. PIB + Production applied.';
+  } else {
+    status.className='status info';
+    status.textContent='Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. (Fill SMV + Buyer Type + Style Type to auto-calculate PIB.)';
+  }
+  setTimeout(function(){$('resultZone').scrollIntoView({behavior:'smooth',block:'start'});},80);
 }
 
-function applyAll() {
-  const buyer = document.getElementById('buyerInput').value;
-  const target = document.getElementById('targetInput').value;
-  const style = document.getElementById('styleInput').value;
-  document.querySelectorAll('.buyer-val').forEach(function(el){ el.textContent = buyer; });
-  document.querySelectorAll('.target-val').forEach(function(el){ el.textContent = target; });
-  document.querySelectorAll('.style-val').forEach(function(el){ el.textContent = style; });
+/* ---------- PDF ---------- */
+function withAllPagesVisible(cb){
+  var pages=document.querySelectorAll('#pagesContainer .page');
+  var prev=[];
+  pages.forEach(function(p){prev.push(p.className);p.classList.add('active');});
+  cb(pages,function restore(){pages.forEach(function(p,i){p.className=prev[i];});});
+}
+function makePDF(cb){
+  if(!hasGenerated) return;
+  if(!(window.jspdf&&window.html2canvas)){alert('PDF library not loaded. Check internet connection.');return;}
+  withAllPagesVisible(function(pages,restore){
+    var pdf=new jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    var i=0;
+    function step(){
+      if(i>=pages.length){restore();cb(pdf);return;}
+      html2canvas(pages[i],{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(function(canvas){
+        var img=canvas.toDataURL('image/png');
+        if(i>0) pdf.addPage('a4','landscape');
+        pdf.addImage(img,'PNG',5,5,287,200);
+        i++; step();
+      }).catch(function(err){restore();alert('PDF render error: '+err.message);});
+    }
+    step();
+  });
+}
+function downloadPDF(){
+  var btn=$('pdfBtn');var old=btn.innerHTML;btn.disabled=true;btn.textContent='Generating...';
+  makePDF(function(pdf){
+    pdf.save('Capacity_Stickers_SNOWTEX.pdf');
+    btn.innerHTML=old;btn.disabled=false;
+  });
+}
+function sharePDF(){
+  var btn=$('shareBtn');var old=btn.innerHTML;btn.disabled=true;btn.textContent='Preparing...';
+  makePDF(function(pdf){
+    var blob=pdf.output('blob');
+    var file=new File([blob],'Capacity_Stickers_SNOWTEX.pdf',{type:'application/pdf'});
+    btn.innerHTML=old;btn.disabled=false;
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:'Capacity Stickers',text:'SNOWTEX Capacity Stickers'}).catch(function(){});
+    } else {
+      pdf.save('Capacity_Stickers_SNOWTEX.pdf');
+      alert('Direct share not supported on this device. PDF downloaded, share it manually via WhatsApp.');
+    }
+  });
 }
 
-function handleExcelUpload(evt) {
-  const file = evt.target.files[0];
-  if (!file) return;
-  const status = document.getElementById('uploadStatus');
-  status.textContent = 'Reading file...';
+/* ---------- EXCEL UPLOAD ---------- */
+function handleExcelUpload(evt){
+  var file=evt.target.files[0];
+  if(!file) return;
+  var status=$('uploadStatus');
+  status.className='status info';status.textContent='Reading file...';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=new Uint8Array(e.target.result);
+      var wb=XLSX.read(data,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      var titleText=String(rows[0]&&rows[0][0]?rows[0][0]:'');
+      var buyerMatch=titleText.match(/Buyer:\s*([^|]+)/i);
+      var styleMatch=titleText.match(/Style:\s*([^|]+)/i);
+      var buyer=buyerMatch?buyerMatch[1].trim():'';
+      var style=styleMatch?styleMatch[1].trim():'';
+      $('cBuyer').value=buyer;
+      $('cStyle').value=style;
 
-      const titleText = String(rows[0] && rows[0][0] ? rows[0][0] : '');
-      const buyerMatch = titleText.match(/Buyer:\s*([^|]+)/i);
-      const styleMatch = titleText.match(/Style:\s*([^|]+)/i);
-      const buyer = buyerMatch ? buyerMatch[1].trim() : '';
-      const style = styleMatch ? styleMatch[1].trim() : '';
-      document.getElementById('buyerInput').value = buyer;
-      document.getElementById('styleInput').value = style;
-
-      let headerRowIdx = -1;
-      for (let i = 0; i < rows.length; i++) {
-        if (rows[i].includes('MC') && rows[i].includes('OP ID')) { headerRowIdx = i; break; }
+      var headerRowIdx=-1;
+      for(var i=0;i<rows.length;i++){
+        if(rows[i].includes('MC')&&rows[i].includes('OP ID')){headerRowIdx=i;break;}
       }
-      if (headerRowIdx === -1) {
-        status.textContent = 'Could not find header row (MC / OP ID). Check the uploaded file.';
-        return;
-      }
+      if(headerRowIdx===-1){status.className='status err';status.textContent='Could not find header row (MC / OP ID). Check the file.';return;}
 
-      const header = rows[headerRowIdx];
-      const colMC = header.indexOf('MC');
-      const colOpId = header.indexOf('OP ID');
-      const colOpName = header.indexOf('OP Name');
-      const colSMV = header.indexOf('SMV');
+      var header=rows[headerRowIdx];
+      var colMC=header.indexOf('MC');
+      var colOpId=header.indexOf('OP ID');
+      var colOpName=header.indexOf('OP Name');
+      var colSMV=header.indexOf('SMV');
 
-      const machines = [];
-      let currentMC = null, currentOpId = '', currentOpName = '', smvSum = 0;
-
-      function pushMachine() {
-        if (currentMC !== null && currentMC !== 0 && currentMC !== '0') {
-          machines.push({ mc: currentMC, opId: currentOpId, opName: currentOpName, smv: smvSum });
+      var machines=[];
+      var currentMC=null,currentOpId='',currentOpName='',smvSum=0,grandSMV=0;
+      function pushMachine(){
+        if(currentMC!==null&&currentMC!==0&&currentMC!=='0'){
+          machines.push({mc:currentMC,opId:currentOpId,opName:currentOpName,smv:smvSum});
         }
-        currentMC = null; currentOpId = ''; currentOpName = ''; smvSum = 0;
+        currentMC=null;currentOpId='';currentOpName='';smvSum=0;
       }
-
-      for (let i = headerRowIdx + 1; i < rows.length; i++) {
-        const r = rows[i];
-        const firstCell = String(r[0] || '').trim();
-        if (firstCell === 'MIN') continue;
-        const mc = r[colMC];
-        if (mc === '' || mc === undefined) continue;
-        if (currentMC === null) currentMC = mc;
-        if (mc !== currentMC) {
-          pushMachine();
-          currentMC = mc;
-        }
-        const opId = String(r[colOpId] || '').trim();
-        const opName = String(r[colOpName] || '').trim();
-        if (opId && opId.toLowerCase() !== 'not entry') currentOpId = opId;
-        if (opName) currentOpName = opName;
-        const smvVal = parseFloat(r[colSMV]);
-        if (!isNaN(smvVal)) smvSum += smvVal;
+      for(var j=headerRowIdx+1;j<rows.length;j++){
+        var r=rows[j];
+        var firstCell=String(r[0]||'').trim();
+        if(firstCell==='MIN') continue;
+        var mc=r[colMC];
+        if(mc===''||mc===undefined) continue;
+        var smvVal=parseFloat(r[colSMV]);
+        if(!isNaN(smvVal)) grandSMV+=smvVal;
+        if(currentMC===null) currentMC=mc;
+        if(mc!==currentMC){pushMachine();currentMC=mc;}
+        var opId=String(r[colOpId]||'').trim();
+        var opName=String(r[colOpName]||'').trim();
+        if(opId&&opId.toLowerCase()!=='not entry') currentOpId=opId;
+        if(opName) currentOpName=opName;
+        if(!isNaN(smvVal)) smvSum+=smvVal;
       }
       pushMachine();
 
-      allMachines = machines;
-      document.getElementById('machineSelectInput').value = '';
-      document.getElementById('selectStatus').textContent = '';
-      fillCardsFromMachines(allMachines);
+      allMachines=machines;
+      if(grandSMV>0) $('pSmv').value=(Math.round(grandSMV*100)/100);
+      $('cMachines').value='';
 
-      const pageCount = Math.max(1, Math.ceil(machines.length / 12));
-      status.textContent = 'Loaded ' + machines.length + ' machine(s) across ' + pageCount + ' page(s). Buyer: ' + (buyer || 'N/A') + ', Style: ' + (style || 'N/A');
-    } catch (err) {
-      status.textContent = 'Error reading file: ' + err.message;
-      console.error(err);
+      $('uploadZone').classList.add('upload-ok');
+      $('uzTitle').textContent=file.name;
+      $('uzSub').textContent='Loaded '+machines.length+' machine(s). Total SMV '+(Math.round(grandSMV*100)/100)+'.';
+
+      status.className='status ok';
+      status.textContent='Loaded '+machines.length+' machine(s). Buyer: '+(buyer||'N/A')+', Style: '+(style||'N/A')+'. Now set parameters and tap Create Capacity Sticker.';
+    }catch(err){
+      status.className='status err';
+      status.textContent='Error reading file: '+err.message;
     }
   };
   reader.readAsArrayBuffer(file);
 }
 </script>
-
 </body>
 </html>
