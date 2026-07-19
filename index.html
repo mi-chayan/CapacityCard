@@ -27,8 +27,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .logo-text{color:#fff;font-weight:800;font-size:17px;letter-spacing:.5px;white-space:nowrap;}
 .topbar-sep{width:1px;height:26px;background:rgba(255,255,255,.2);flex-shrink:0;}
 .topbar-sub{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.help-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:7px 13px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.help-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:34px;height:34px;padding:0;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .help-btn:hover{background:rgba(255,255,255,.2);}
+.help-txt{display:none;}
+.help-btn.hl{background:var(--green)!important;border-color:var(--green)!important;}
+@keyframes helpBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.help-btn.blinking{animation:helpBlink .5s ease-in-out 6;}
+@media(min-width:760px){
+  .topbar{height:76px;padding:0 26px;}
+  .logo-text{font-size:23px;}
+  .topbar-sub{font-size:14.5px;}
+  .help-btn{border-radius:20px;width:auto;height:auto;padding:9px 17px;font-size:13px;}
+  .help-txt{display:inline;}
+}
 .page-wrap{padding:18px 14px;}
 @media(min-width:760px){.page-wrap{padding:26px;max-width:1120px;margin:0 auto;}}
 .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
@@ -48,20 +59,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7A99' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer;}
 .field-opt input{border-style:dashed;}
 .field-opt input:focus{border-style:solid;}
-/* FILE UPLOAD */
-.upload-zone{border:2px dashed #C5CFDF;border-radius:11px;background:#F8F9FB;padding:16px;text-align:center;cursor:pointer;transition:.2s;display:block;}
-.upload-zone:hover{border-color:var(--navy);background:#fff;}
-.upload-zone input{display:none;}
-.uz-icon{width:34px;height:34px;margin:0 auto 8px;color:var(--navy);}
-.uz-title{font-size:14px;font-weight:700;color:var(--navy);word-break:break-all;}
-.uz-sub{font-size:11px;color:var(--muted);margin-top:3px;}
-.upload-ok{border-color:var(--green);background:var(--green-light);}
-.upload-ok .uz-title,.upload-ok .uz-icon{color:var(--green);}
-/* TOGGLE */
-.toggle-row{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;background:#F8F9FB;border:1px solid var(--border);border-radius:10px;flex-wrap:wrap;}
-.toggle-row .tr-txt{flex:1;min-width:180px;}
-.toggle-row .tr-main{font-size:13px;font-weight:700;color:var(--navy);}
-.toggle-row .tr-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+/* FILE UPLOAD (compact) */
+.setup-row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;}
+.upload-mini{flex:1;min-width:190px;display:flex;align-items:center;gap:10px;border:1.5px dashed #C5CFDF;border-radius:10px;background:#F8F9FB;padding:10px 12px;cursor:pointer;transition:.2s;}
+.upload-mini:hover{border-color:var(--navy);background:#fff;}
+.upload-mini input{display:none;}
+.upload-mini .uz-icon{width:22px;height:22px;margin:0;color:var(--navy);flex-shrink:0;}
+.uz-title{font-size:13px;font-weight:700;color:var(--navy);word-break:break-all;line-height:1.2;}
+.uz-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.upload-mini.upload-ok{border-style:solid;border-color:var(--green);background:var(--green-light);}
+.upload-mini.upload-ok .uz-icon,.upload-mini.upload-ok .uz-title{color:var(--green);}
+.uz-remove{margin-left:auto;background:#fff;border:1px solid var(--border);color:var(--muted);width:22px;height:22px;border-radius:50%;font-size:14px;line-height:1;cursor:pointer;flex-shrink:0;display:none;align-items:center;justify-content:center;}
+.uz-remove:hover{background:var(--red-light);color:var(--red);border-color:#F0B8C2;}
+/* TOGGLE (compact) */
+.toggle-mini{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid var(--border);border-radius:10px;background:#F8F9FB;padding:8px 14px;flex:0 0 auto;}
+.tm-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;text-align:center;}
 .switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;}
 .switch input{opacity:0;width:0;height:0;}
 .slider{position:absolute;cursor:pointer;inset:0;background:#C5CFDF;transition:.2s;border-radius:26px;}
@@ -71,14 +83,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .toggle-state{font-size:12px;font-weight:800;color:var(--green);min-width:30px;}
 .divider{height:1px;background:var(--border);margin:18px 0;}
 /* CUSTOM DESIGN */
-.custom-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:15px 18px;cursor:pointer;font-family:inherit;transition:.2s;}
-.custom-toggle:hover{border-color:var(--navy);}
-.ct-left{display:flex;align-items:center;gap:11px;}
-.ct-icon{width:30px;height:30px;border-radius:8px;background:var(--red-light);color:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ct-title{font-size:14px;font-weight:800;color:var(--navy);}
-.ct-sub{font-size:11px;color:var(--muted);margin-top:1px;}
-.ct-chev{color:var(--muted);transition:transform .25s;}
+.custom-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:transparent;border:none;padding:0;margin:0;cursor:pointer;font-family:inherit;transition:.2s;text-align:left;}
+.ct-left{display:flex;align-items:flex-start;gap:10px;text-align:left;}
+.ct-left .sec-title,.ct-sub{text-align:left;display:block;}
+.ct-sub{font-size:11px;color:var(--muted);margin-top:4px;text-transform:none;letter-spacing:0;}
+.ct-chev{color:var(--muted);transition:transform .25s;margin-top:2px;flex-shrink:0;}
 .custom-toggle.open .ct-chev{transform:rotate(180deg);}
+.custom-card{transition:.2s;}
+.custom-card.active{background:linear-gradient(180deg,#ffffff,#FCEEF1);border-color:#F0B8C2;box-shadow:0 4px 22px rgba(200,16,46,.14);}
+.custom-toggle.open .sec-title,.custom-toggle.open .sec-title small,.custom-toggle.open .ct-sub{color:#fff!important;}
+.custom-toggle.open .ct-chev{color:#fff;}
+.custom-toggle.open .sec-bar{background:#fff;}
+.custom-card.active .custom-toggle{background:var(--red);margin:-20px -18px 0;padding:20px 18px;border-radius:14px 14px 0 0;}
 .custom-body{display:none;padding-top:16px;}
 .custom-body.open{display:block;animation:fade .2s ease;}
 @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
@@ -88,6 +104,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .status.ok{color:var(--green);}
 .status.err{color:var(--red);}
 .status.info{color:var(--navy);}
+/* POLICY PREVIEW (single line) */
+.policy-box{display:none;margin-top:12px;padding:10px 13px;background:#F8F9FB;border:1px solid var(--border);border-left:3px solid var(--navy);border-radius:8px;font-size:12px;color:var(--navy);font-weight:600;line-height:1.7;}
+.policy-box b{color:var(--red);}
 /* ACTION BAR */
 .action-bar{position:sticky;bottom:0;z-index:40;background:linear-gradient(to top,var(--bg) 70%,rgba(240,242,245,0));padding:14px 0 6px;margin-top:4px;}
 .action-inner{display:flex;gap:9px;flex-wrap:wrap;}
@@ -117,36 +136,40 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   column-gap:1.5mm;row-gap:2mm;border:1px solid #999;overflow:hidden;
   font-family:'Noto Sans Bengali','SolaimanLipi',sans-serif;
 }
-.card-st{border:1.25px solid #000;display:flex;flex-direction:column;font-size:7px;overflow:hidden;color:#000;}
-.card-st .title-row{display:flex;border-bottom:1px solid #000;height:5mm;flex:0 0 auto;}
-.card-st .title-row .title{flex:1.1;font-weight:700;font-size:9.5px;text-align:center;display:flex;align-items:center;justify-content:center;border-right:1px solid #000;padding:0 2px;}
-.card-st .title-row .machine-label{flex:1;text-align:center;font-weight:500;padding:0 2px;display:flex;align-items:center;justify-content:center;}
-.card-st .title-row .machine-box{flex:1;border-left:1px solid #000;display:flex;align-items:center;justify-content:center;}
-.card-st .info-row{display:flex;border-bottom:1px solid #000;height:4mm;flex:0 0 auto;}
-.card-st .info-row .cell{flex:1;display:flex;align-items:center;border-right:1px solid #000;padding:0 2px;}
-.card-st .info-row .cell:last-child{border-right:none;}
-.card-st .info-row .cell .lbl{font-weight:500;white-space:nowrap;}
-.card-st .info-row .cell .val{flex:1;text-align:center;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.card-st .info-row .cell .val[contenteditable="true"]{cursor:text;}
-.card-st .info-row .cell .val[contenteditable="true"]:hover,
-.card-st .info-row .cell .val[contenteditable="true"]:focus{outline:1px dashed #1b5fa8;background:#eef5ff;}
+.card-st{border:0.75px solid #000;display:flex;flex-direction:column;font-size:7px;overflow:hidden;color:#000;}
+/* the whole card — title, SMV/Target/Buyer, Name/Style, and the day
+   table — is ONE single table, exactly like the original Excel 'Blank
+   card' sheet, so every field gets a real, complete cell border on all
+   sides instead of a single flex divider line. */
 .card-st table{border-collapse:collapse;width:100%;flex:1 1 auto;table-layout:fixed;}
-.card-st table th,.card-st table td{border:0.75px solid #000;text-align:center;padding:0.5px;overflow:hidden;}
-.card-st table thead th{font-weight:500;font-size:6px;line-height:1;height:5mm;}
-.card-st table tbody tr{height:3.6mm;}
-.card-st table tbody tr.cap-row td{font-weight:700;font-size:5px;height:3.5mm;}
-.card-st table tbody td.pib70,.card-st table tbody td.pib100,.card-st table tbody td.pib120{font-weight:700;color:#14532d;}
-.card-st table tbody td.prod70,.card-st table tbody td.prod100,.card-st table tbody td.prod120{font-weight:700;color:#1b3a6b;}
-.card-st table tfoot tr:first-child td{font-weight:700;font-size:5px;padding:0;height:3.5mm;}
-.card-st table tfoot tr:last-child td{height:6mm;}
-/* thick perimeter box around last 3 rows (capacity + 2 footer rows) */
-.card-st table tbody tr.cap-row td{border-top-width:1.8px;}
-.card-st table tbody tr.cap-row td:first-child{border-left-width:1.8px;}
-.card-st table tbody tr.cap-row td:last-child{border-right-width:1.8px;}
-.card-st table tfoot tr td:first-child{border-left-width:1.8px;}
-.card-st table tfoot tr td:last-child{border-right-width:1.8px;}
-.card-st table tfoot tr:last-child td{border-bottom-width:1.8px;}
-.card-st .footnote{font-size:4.3px;text-align:center;padding:0.5px;border-top:1px solid #000;flex:0 0 auto;}
+/* NOTE: no white-space:nowrap and no text-overflow:ellipsis here —
+   ellipsis clipping makes html2canvas shatter Bengali glyphs into
+   broken boxes in the exported PDF. plain overflow:hidden only. */
+.card-st table td,.card-st table th{border:0.5px solid #000;text-align:center;padding:0.5px 2px;overflow:hidden;}
+.card-st table tbody tr{height:3.7mm;}
+.card-st table tr.title-row td{height:5mm;}
+.card-st table tr.title-row td.title-cell{font-weight:700;font-size:9.5px;text-align:center;}
+.card-st table tr.title-row td.machine-val{font-weight:700;text-align:center;}
+.card-st table tr.info-row td{height:4mm;}
+.card-st table td.lbl-cell{font-weight:500;text-align:left;font-size:6px;line-height:1.1;}
+.card-st table td.machine-val,
+.card-st table td.smv-val,.card-st table td.target-val,.card-st table td.buyer-val,
+.card-st table td.nameid-val,.card-st table td.style-val{font-weight:700;text-align:left;}
+.card-st table td[contenteditable="true"]{cursor:text;}
+.card-st table td[contenteditable="true"]:hover,
+.card-st table td[contenteditable="true"]:focus{outline:1px dashed #1b5fa8;background:#eef5ff;}
+.card-st table tr.hdr-row td{font-weight:500;font-size:6px;line-height:1;height:5mm;white-space:normal;}
+.card-st table tr.cap-row td{font-weight:700;font-size:5px;}
+.card-st table td.pib70,.card-st table td.pib100,.card-st table td.pib120{font-weight:700;color:#000;}
+.card-st table td.prod70,.card-st table td.prod100,.card-st table td.prod120{font-weight:700;color:#000;}
+.card-st table tr.lineeff-head td{font-weight:700;font-size:5px;padding:0;}
+/* matches the original Excel 'Blank card' tab exactly: every internal
+   border is thin (1px), the only thicker ("medium") lines are the top
+   of the ক্যাপাসিটি row and the bottom of the last line-efficiency row,
+   same weight as the card's own outer frame. */
+.card-st table tr.cap-row td{border-top:2.5px solid #000;}
+.card-st table tr.lineeff-val td{border-bottom-width:1px;}
+.card-st .footnote{font-size:4.3px;text-align:center;padding:0.5px;border-top:0.5px solid #000;flex:0 0 auto;}
 /* MODAL */
 .modal-mask{display:none;position:fixed;inset:0;background:rgba(27,42,71,.55);z-index:200;padding:16px;overflow-y:auto;}
 .modal-mask.open{display:flex;align-items:flex-start;justify-content:center;}
@@ -163,8 +186,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .guide-feat{background:#F8F9FB;border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:6px;}
 .guide-feat h3{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;}
 .guide-feat li{font-size:12.5px;line-height:1.8;color:var(--text);margin-left:16px;}
-.helpline{margin-top:16px;background:var(--red-light);border:1px solid #F0B8C2;border-radius:10px;padding:13px 15px;font-size:13px;color:var(--red);font-weight:700;text-align:center;}
-.helpline span{font-family:'Roboto Mono',monospace;font-size:16px;}
+.info-card{margin-top:16px;background:linear-gradient(135deg,var(--navy),#101c33);border-radius:12px;overflow:hidden;}
+.info-card .info-row{display:flex;align-items:center;gap:12px;padding:13px 15px;}
+.info-card .info-icon{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.info-card .info-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.6px;}
+.info-card .info-value{font-size:14px;font-weight:800;color:#fff;margin-top:2px;letter-spacing:.4px;}
+.info-card .info-divider{height:1px;background:rgba(255,255,255,.12);margin:0 15px;}
 /* FOOTER */
 .footer{text-align:center;padding:16px;}
 .footer-in{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:11px;color:var(--muted);font-weight:600;}
@@ -187,9 +214,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="topbar-sep"></div>
     <span class="topbar-sub">Capacity Sticker Generator</span>
   </div>
-  <button class="help-btn" onclick="openGuide()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    ব্যবহার নির্দেশিকা
+  <button class="help-btn" id="helpBtn" onclick="openGuide()" title="ব্যবহার নির্দেশিকা">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span class="help-txt">ব্যবহার নির্দেশিকা</span>
   </button>
 </div>
 
@@ -197,30 +224,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
   <!-- CARD 1: SETUP + PARAMETERS -->
   <div class="card">
-    <div class="sec-head"><div class="sec-bar"></div><span class="sec-title">Setup &amp; Parameters <small>Excel আপলোড ও পলিসি ইনপুট</small></span></div>
+    <div class="sec-head"><div class="sec-bar"></div><span class="sec-title">Upload the Process Tag and Toggle Name if you need</span></div>
 
-    <label class="upload-zone" id="uploadZone">
-      <input id="excelInput" type="file" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
-      <svg class="uz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      <div class="uz-title" id="uzTitle">Upload OP Process Skill Tag Report</div>
-      <div class="uz-sub" id="uzSub">Tap to choose the .xlsx file (Machine no, Name, ID, SMV auto-load)</div>
-    </label>
-
-    <div class="toggle-row">
-      <div class="tr-txt">
-        <div class="tr-main">Take operator name from Process Tag</div>
-        <div class="tr-sub">ON: নাম (আইডি) Excel থেকে অটো বসবে। OFF: নাম ঘর খালি থাকবে, হাতে লিখবেন।</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="nameToggle" checked onchange="onNameToggle()">
-        <span class="slider"></span>
+    <div class="setup-row">
+      <label class="upload-mini" id="uploadZone">
+        <input id="excelInput" type="file" accept=".xlsx,.xls" onchange="onExcelFileSelected(event)">
+        <svg class="uz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div><div class="uz-title" id="uzTitle">Upload Process Tag Excel</div><div class="uz-sub" id="uzSub">Tap to choose .xlsx file</div></div>
+        <button type="button" class="uz-remove" id="uzRemoveBtn" title="Remove Excel" onclick="event.preventDefault();event.stopPropagation();removeExcelClick();">&times;</button>
       </label>
-      <span class="toggle-state" id="nameToggleState">ON</span>
+      <div class="toggle-mini">
+        <div class="tm-label">Name from Tag</div>
+        <label class="switch">
+          <input type="checkbox" id="nameToggle" checked onchange="onNameToggle()">
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-state" id="nameToggleState">ON</span>
+      </div>
+    </div>
+
+    <div id="lineBadge" style="display:none;margin-top:10px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span id="lineBadgeChip" style="display:none;align-items:center;gap:6px;background:var(--navy);color:#fff;font-size:12px;font-weight:800;padding:6px 14px;border-radius:20px;">
+          Line: <span id="lineBadgeText"></span>
+        </span>
+        <span id="lineSummaryText" style="font-size:12px;color:var(--navy);font-weight:600;line-height:1.5;"></span>
+      </div>
     </div>
 
     <div class="divider"></div>
 
-    <div class="sec-head"><div class="sec-bar"></div><span class="sec-title">Input Parameters <small>PIB পলিসি</small></span></div>
+    <div class="sec-head"><div class="sec-bar"></div><span class="sec-title">Input Parameters</span></div>
     <div class="grid4">
       <div class="field">
         <label class="field-label">SMV <span class="opt-tag">auto from Excel</span></label>
@@ -247,15 +281,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <input id="pTotalDays" type="number" min="1" max="7" inputmode="numeric" placeholder="defaults to LC Days">
       </div>
     </div>
+    <div class="policy-box" id="policyPreview"></div>
     <div class="status info" id="uploadStatus"></div>
   </div>
 
   <!-- CARD 2: CUSTOM DESIGN -->
-  <div class="card" style="padding:14px;">
+  <div class="card custom-card" id="customCard">
     <button class="custom-toggle" id="customToggle" onclick="toggleCustom()">
       <div class="ct-left">
-        <div class="ct-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
-        <div><div class="ct-title">Custom Design <span style="font-size:10px;font-weight:600;color:var(--muted);">(optional)</span></div><div class="ct-sub">Buyer, Style, Target%, নির্দিষ্ট মেশিন ও খালি স্টিকার</div></div>
+        <div class="sec-bar"></div>
+        <div>
+          <span class="sec-title">Custom Design <small style="text-transform:none;">(optional)</small></span>
+          <div class="ct-sub">Buyer, Style, নির্দিষ্ট মেশিন ও অতিরিক্ত খালি স্টিকার</div>
+        </div>
       </div>
       <svg class="ct-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
@@ -263,7 +301,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="grid3">
         <div class="field"><label class="field-label">Buyer Name</label><input id="cBuyer" type="text" placeholder="auto from Excel"></div>
         <div class="field"><label class="field-label">Style Name</label><input id="cStyle" type="text" placeholder="auto from Excel"></div>
-        <div class="field"><label class="field-label">Target % <span class="opt-tag">optional</span></label><input id="cTarget" type="text" placeholder="e.g. 30%"></div>
       </div>
       <div class="grid3" style="margin-top:12px;">
         <div class="field" style="grid-column:1 / -1;">
@@ -274,9 +311,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
       <div class="grid3" style="margin-top:12px;">
         <div class="field">
-          <label class="field-label">Blank Stickers <span class="opt-tag">optional</span></label>
+          <label class="field-label">Extra Blank Stickers <span class="opt-tag">optional</span></label>
           <input id="cBlanks" type="number" min="0" max="120" inputmode="numeric" placeholder="e.g. 3">
-          <div class="hint">শেষে এতগুলো সম্পূর্ণ খালি স্টিকার যোগ হবে, হাতে লেখার জন্য।</div>
+          <div class="hint">শেষে এতগুলো সম্পূর্ণ নতুন খালি স্টিকার যোগ হবে, হাতে লেখার জন্য।</div>
         </div>
       </div>
     </div>
@@ -311,7 +348,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div id="pagesContainer"></div>
   </div>
 
-  <div class="footer"><div class="footer-in"><span class="fdot"></span>&copy; Snowtex CI Team &nbsp;|&nbsp; Helpline IP 2803</div></div>
+  <div class="footer"></div>
+</div>
+
+<!-- WARNING MODAL -->
+<div class="modal-mask" id="warnMask" onclick="if(event.target===this)closeWarnCancel()">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-head" style="background:var(--red);">
+      <h2>সতর্কতা</h2>
+      <button class="modal-close" onclick="closeWarnCancel()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="warnText" style="font-size:13.5px;line-height:1.7;color:var(--text);"></p>
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <button class="btn btn-sec" style="flex:1;" onclick="closeWarnCancel()">বাতিল</button>
+        <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="closeWarnConfirm()">নিশ্চিত করুন</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- USER GUIDE MODAL -->
@@ -325,9 +379,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="guide-step"><div class="gs-num">1</div><div class="gs-txt"><b>Excel আপলোড করুন।</b> "Upload OP Process Skill Tag Report" এ ট্যাপ করে <b>OP_Process_Skill_Tag_Report</b> ফাইলটি দিন। মেশিন নং, অপারেটরের নাম, আইডি ও SMV অটো লোড হবে। মোট SMV উপরের SMV ঘরে বসে যাবে।</div></div>
       <div class="guide-step"><div class="gs-num">2</div><div class="gs-txt"><b>নাম টগল।</b> ON রাখলে অপারেটরের নাম Excel থেকে আসবে। OFF করলে নাম ঘর খালি থাকবে, হাতে লিখবেন।</div></div>
       <div class="guide-step"><div class="gs-num">3</div><div class="gs-txt"><b>Input Parameters দিন।</b> SMV (দরকার হলে বদলান), Buyer Type, Style Type, Total Days (ঐচ্ছিক)। এগুলো দিয়ে PIB টাকা ও প্রোডাকশন হিসাব হয়।</div></div>
-      <div class="guide-step"><div class="gs-num">4</div><div class="gs-txt"><b>Custom Design (ঐচ্ছিক)।</b> বাটনে ট্যাপ করে খুলুন। এখানে Buyer, Style, Target% বদলাতে পারবেন, নির্দিষ্ট মেশিন নং সিলেক্ট করতে পারবেন, এবং শেষে কয়েকটি খালি স্টিকার যোগ করতে পারবেন।</div></div>
+      <div class="guide-step"><div class="gs-num">4</div><div class="gs-txt"><b>Custom Design (ঐচ্ছিক)।</b> বাটনে ট্যাপ করে খুলুন। এখানে Buyer, Style বদলাতে পারবেন, নির্দিষ্ট মেশিন নং সিলেক্ট করে শুধু সেগুলোই প্রিন্ট করতে পারবেন, এবং শেষে অতিরিক্ত সম্পূর্ণ খালি স্টিকার যোগ করতে পারবেন।</div></div>
       <div class="guide-step"><div class="gs-num">5</div><div class="gs-txt"><b>Create Capacity Sticker</b> চাপুন। A4 সাইজে প্রতি পেজে ১২টি স্টিকার তৈরি হবে। Prev / Next দিয়ে পেজ দেখুন।</div></div>
-      <div class="guide-step"><div class="gs-num">6</div><div class="gs-txt"><b>প্রয়োজনে এডিট।</b> যেকোনো স্টিকারে মেশিন নং, এস.এম.ভি বা নাম ক্লিক করে বদলান। কোনো স্টিকারের SMV বদলালে শুধু ঐ স্টিকারের হিসাব আপডেট হবে।</div></div>
+      <div class="guide-step"><div class="gs-num">6</div><div class="gs-txt"><b>প্রয়োজনে এডিট।</b> যেকোনো স্টিকারে মেশিন নং, এস.এম.ভি বা নাম ঘরে সরাসরি ক্লিক করে (কার্সর আসবে) হাতে বদলাতে পারবেন। কোনো স্টিকারের SMV বদলালে শুধু ঐ স্টিকারের হিসাব আপডেট হবে। নির্দিষ্ট মেশিন বাছতে Custom Design এর "Custom Machine Numbers" ঘর ব্যবহার করুন।</div></div>
       <div class="guide-step"><div class="gs-num">7</div><div class="gs-txt"><b>Download PDF</b> দিয়ে সব পেজ এক PDF এ সেভ করুন, অথবা <b>Share</b> দিয়ে সরাসরি WhatsApp/অন্য অ্যাপে পাঠান।</div></div>
       <div class="guide-feat">
         <h3>সব সুবিধা</h3>
@@ -341,7 +395,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <li>মোবাইল থেকে PDF শেয়ার</li>
         </ul>
       </div>
-      <div class="helpline">Helpline IP <span>2803</span></div>
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div><div class="info-label">Helpline</div><div class="info-value">IP 2803</div></div>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-row">
+          <div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><path d="M14.83 14.83a4 4 0 1 1 0-5.66"/></svg></div>
+          <div><div class="info-label">Developed by</div><div class="info-value">SNOWTEX CI Team</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -351,6 +415,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 var allMachines = [];
 var lastDayResults = null;
 var hasGenerated = false;
+var currentLineName = '';
 
 function $(id){return document.getElementById(id);}
 
@@ -358,10 +423,76 @@ function $(id){return document.getElementById(id);}
 function openGuide(){$('guideMask').classList.add('open');}
 function closeGuide(){$('guideMask').classList.remove('open');}
 
+/* ---------- warning modal (custom, not browser confirm) ---------- */
+var warnConfirmCb=null, warnCancelCb=null;
+function openWarn(text,onConfirm,onCancel){
+  $('warnText').textContent=text;
+  warnConfirmCb=onConfirm; warnCancelCb=onCancel||null;
+  $('warnMask').classList.add('open');
+}
+function closeWarnCancel(){
+  $('warnMask').classList.remove('open');
+  var cb=warnCancelCb; warnConfirmCb=null; warnCancelCb=null;
+  if(cb) cb();
+}
+function closeWarnConfirm(){
+  $('warnMask').classList.remove('open');
+  var cb=warnConfirmCb; warnConfirmCb=null; warnCancelCb=null;
+  if(cb) cb();
+}
+
+/* ---------- excel select / remove guard ---------- */
+function onExcelFileSelected(evt){
+  if(!evt.target.files || !evt.target.files[0]) return;
+  if(allMachines.length>0){
+    openWarn(
+      'আপনি নতুন Excel ফাইল সিলেক্ট করেছেন। আগের সব ডেটা মুছে নতুন ফাইল লোড হবে। আপনি কি নিশ্চিত?',
+      function(){ handleExcelUpload(evt); },
+      function(){ evt.target.value=''; }
+    );
+  } else {
+    handleExcelUpload(evt);
+  }
+}
+function removeExcelClick(){
+  if(allMachines.length===0) return;
+  openWarn('Excel ফাইল সরিয়ে দিলে সব ডেটা রিফ্রেশ হয়ে যাবে। আপনি কি নিশ্চিত?', doRemoveExcel, null);
+}
+function doRemoveExcel(){
+  allMachines=[]; currentLineName='';
+  $('excelInput').value='';
+  $('uploadZone').classList.remove('upload-ok');
+  $('uzTitle').textContent='Upload Process Tag Excel';
+  $('uzSub').textContent='Tap to choose .xlsx file';
+  $('uzRemoveBtn').style.display='none';
+  $('lineBadge').style.display='none';
+  $('lineBadgeChip').style.display='none';
+  $('lineBadgeText').textContent='';
+  $('lineSummaryText').textContent='';
+  var hb=$('helpBtn');
+  if(hb){hb.classList.remove('hl');hb.classList.remove('blinking');}
+  $('pSmv').value='';
+  $('pBuyerType').value='';
+  $('pStyleType').value='';
+  $('pTotalDays').value='';
+  $('cBuyer').value='';
+  $('cStyle').value='';
+  $('cMachines').value='';
+  $('cBlanks').value='';
+  $('uploadStatus').className='status info';
+  $('uploadStatus').textContent='';
+  updatePolicyPreview();
+  lastDayResults=null; hasGenerated=false;
+  $('pdfBtn').disabled=true; $('shareBtn').disabled=true;
+  $('resultZone').style.display='none';
+  $('pagesContainer').innerHTML='';
+}
+
 /* ---------- custom panel ---------- */
 function toggleCustom(){
-  $('customToggle').classList.toggle('open');
-  $('customBody').classList.toggle('open');
+  var open=$('customToggle').classList.toggle('open');
+  $('customBody').classList.toggle('open',open);
+  $('customCard').classList.toggle('active',open);
 }
 
 /* ---------- name toggle ---------- */
@@ -371,18 +502,22 @@ function onNameToggle(){
   refreshNameFields();
 }
 
-/* First-name rule: take first word; if first word length < 5 chars (Mst., Md., etc), take next word. */
+/* Real first-name rule: skip any leading honorific/title (Mst, Md, Most, Miss, Mrs, Mr, Ms, etc)
+   and any short abbreviation ending with a dot, then take the first real name word. */
+var HONORIFICS={md:1,mst:1,most:1,most:1,mosammat:1,musammat:1,mosammad:1,mosa:1,most2:0,miss:1,mrs:1,mr:1,ms:1,sm:1,mt:1,mosammot:1,sri:1,sree:1};
 function computeNameId(m){
   var full=(m.opName||'').trim();
   var idTail=m.opId?String(m.opId).slice(-5):'';
   var name='';
   if(full){
     var parts=full.split(/\s+/).filter(Boolean);
-    if(parts.length){
-      var first=parts[0];
-      if(first.length<5 && parts.length>1) name=parts[1];
-      else name=first;
+    var idx=0;
+    while(idx<parts.length-1){
+      var norm=parts[idx].replace(/[.\-]/g,'').toLowerCase();
+      if(HONORIFICS[norm] || (parts[idx].indexOf('.')>-1 && norm.length<=4)) idx++;
+      else break;
     }
+    name=parts[idx]||parts[0]||'';
   }
   if(name && idTail) return name+' ('+idTail+')';
   if(name) return name;
@@ -410,41 +545,49 @@ function buildDayRow(dayNum,label){
 function buildCardHTML(){
   return ''+
   '<div class="card-st">'+
-    '<div class="title-row">'+
-      '<div class="title">পিআইবি কার্ড</div>'+
-      '<div class="machine-label">মেশিন নং:</div>'+
-      '<div class="machine-box"><span class="val machine-val" contenteditable="true"></span></div>'+
-    '</div>'+
-    '<div class="info-row">'+
-      '<div class="cell"><span class="lbl">এস.এম.ভি:</span><span class="val smv-val" contenteditable="true"></span></div>'+
-      '<div class="cell"><span class="lbl">টার্গেট:</span><span class="val target-val"></span></div>'+
-      '<div class="cell"><span class="lbl">বায়ার:</span><span class="val buyer-val"></span></div>'+
-    '</div>'+
-    '<div class="info-row">'+
-      '<div class="cell"><span class="lbl">নাম (আইডি):</span><span class="val nameid-val" contenteditable="true"></span></div>'+
-      '<div class="cell"><span class="lbl">স্টাইল:</span><span class="val style-val"></span></div>'+
-    '</div>'+
     '<table>'+
-      '<thead><tr>'+
-        '<th style="width:10%">দিন</th>'+
-        '<th>প্রোডাকশন<br>(৭০%)</th><th>পি.আই.বি</th>'+
-        '<th>প্রোডাকশন<br>(১০০%)</th><th>পি.আই.বি</th>'+
-        '<th>প্রোডাকশন<br>(১২০%)</th><th>পি.আই.বি</th>'+
-      '</tr></thead>'+
+      '<colgroup>'+
+        '<col style="width:16.6%"><col style="width:13.3%"><col style="width:12.5%">'+
+        '<col style="width:14.6%"><col style="width:15.2%"><col style="width:14.6%">'+
+        '<col style="width:13.2%">'+
+      '</colgroup>'+
       '<tbody>'+
+        '<tr class="title-row">'+
+          '<td colspan="4" class="title-cell">পিআইবি কার্ড</td>'+
+          '<td class="lbl-cell">মেশিন নং:</td>'+
+          '<td colspan="2" class="machine-val" contenteditable="true"></td>'+
+        '</tr>'+
+        '<tr class="info-row">'+
+          '<td class="lbl-cell">এস.এম.ভি:</td>'+
+          '<td class="smv-val" contenteditable="true"></td>'+
+          '<td class="lbl-cell">টার্গেট:</td>'+
+          '<td class="target-val"></td>'+
+          '<td class="lbl-cell">বায়ার:</td>'+
+          '<td colspan="2" class="buyer-val"></td>'+
+        '</tr>'+
+        '<tr class="info-row">'+
+          '<td class="lbl-cell">নাম (আইডি):</td>'+
+          '<td colspan="3" class="nameid-val" contenteditable="true"></td>'+
+          '<td class="lbl-cell">স্টাইল:</td>'+
+          '<td colspan="2" class="style-val"></td>'+
+        '</tr>'+
+        '<tr class="hdr-row">'+
+          '<td>দিন</td>'+
+          '<td>প্রোডাকশন<br>(৭০%)</td><td>পি.আই.বি</td>'+
+          '<td>প্রোডাকশন<br>(১০০%)</td><td>পি.আই.বি</td>'+
+          '<td>প্রোডাকশন<br>(১২০%)</td><td>পি.আই.বি</td>'+
+        '</tr>'+
         buildDayRow('1','১ম')+buildDayRow('2','২য়')+buildDayRow('3','৩য়')+
         buildDayRow('4','৪র্থ')+buildDayRow('5','৫ম')+buildDayRow('6','৬ষ্ঠ')+buildDayRow('7','৭ম')+
         '<tr class="cap-row"><td colspan="3">ক্যাপাসিটি</td><td colspan="4"></td></tr>'+
-      '</tbody>'+
-      '<tfoot>'+
-        '<tr>'+
-          '<td>লাইন ইফিসিয়েন্সি</td>'+
+        '<tr class="lineeff-head">'+
+          '<td>লাইন ইফি%</td>'+
           '<td>প্রোডাকশন</td><td>পি আই বি</td>'+
           '<td>প্রোডাকশন</td><td>পি আই বি</td>'+
           '<td>প্রোডাকশন</td><td>পি আই বি</td>'+
         '</tr>'+
-        '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'+
-      '</tfoot>'+
+        '<tr class="lineeff-val"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'+
+      '</tbody>'+
     '</table>'+
     '<div class="footnote">ইফিসিয়েন্সি ও ডিফেক্ট রেটের উপর পি আই বি এমাউন্ট পরিবর্তনশীল</div>'+
   '</div>';
@@ -521,9 +664,9 @@ function buildDayResults(){
     var lineEff=getLineTargetEff(lcDays,day,buyerType);
     var op=Math.min(lineEff+10,cap);
     var pib=getPIB(op);
-    res.push({day:day,operatorTarget:op,pib70:pib.pib70,pib100:pib.pib100,pib120:pib.pib120});
+    res.push({day:day,lineEff:lineEff,operatorTarget:op,pib70:pib.pib70,pib100:pib.pib100,pib120:pib.pib120});
   }
-  return {rows:res,lcDays:lcDays,totalDays:totalDays,smv:smv};
+  return {rows:res,lcDays:lcDays,totalDays:totalDays,smv:smv,cap:cap};
 }
 function applyDayResultsToCard(card){
   var smvEl=card.querySelector('.smv-val');
@@ -556,14 +699,29 @@ $('pagesContainer').addEventListener('input',function(e){
   }
 });
 
-/* ---------- meta (buyer/style/target) ---------- */
+/* ---------- policy preview (read-only, two lines) ---------- */
+function updatePolicyPreview(){
+  var box=$('policyPreview');
+  var dr=buildDayResults();
+  if(!dr){box.style.display='none';box.innerHTML='';return;}
+  var parts=dr.rows.map(function(d){return 'Day'+d.day+': '+d.lineEff+'%→'+d.operatorTarget+'%';});
+  box.innerHTML=
+    '<div><b>Policy:</b> LC '+dr.lcDays+' days, Total '+dr.totalDays+' days, cap '+dr.cap+'%</div>'+
+    '<div style="margin-top:4px;">'+parts.join(' , ')+'</div>';
+  box.style.display='block';
+}
+['pSmv','pBuyerType','pStyleType','pTotalDays'].forEach(function(id){
+  var el=$(id);
+  if(el){el.addEventListener('input',updatePolicyPreview);el.addEventListener('change',updatePolicyPreview);}
+});
+
+/* ---------- meta (buyer/style) ---------- */
+/* target-val cell is intentionally left blank on every sticker for manual handwriting */
 function applyMeta(){
   var buyer=($('cBuyer').value||'').trim();
   var style=($('cStyle').value||'').trim();
-  var target=($('cTarget').value||'').trim();
   document.querySelectorAll('.buyer-val').forEach(function(el){el.textContent=buyer;});
   document.querySelectorAll('.style-val').forEach(function(el){el.textContent=style;});
-  document.querySelectorAll('.target-val').forEach(function(el){el.textContent=target;});
 }
 
 /* ---------- machine selection ---------- */
@@ -648,7 +806,7 @@ function makePDF(cb){
     var i=0;
     function step(){
       if(i>=pages.length){restore();cb(pdf);return;}
-      html2canvas(pages[i],{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(function(canvas){
+      html2canvas(pages[i],{scale:3,backgroundColor:'#ffffff',useCORS:true}).then(function(canvas){
         var img=canvas.toDataURL('image/png');
         if(i>0) pdf.addPage('a4','landscape');
         pdf.addImage(img,'PNG',5,5,287,200);
@@ -658,23 +816,36 @@ function makePDF(cb){
     step();
   });
 }
+function buildFileName(){
+  var base=(currentLineName||'Capacity_Stickers').trim();
+  var safe=base.replace(/[^a-zA-Z0-9ঀ-৿]+/g,'_').replace(/^_+|_+$/g,'');
+  if(!safe) safe='Capacity_Stickers';
+  var d=new Date();
+  var yyyy=d.getFullYear();
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var dd=String(d.getDate()).padStart(2,'0');
+  return safe+'_'+yyyy+'-'+mm+'-'+dd+'.pdf';
+}
+/* Download uses the browser's native print-to-PDF. Unlike html2canvas
+   (which rasterizes and forces every line to at least 1 solid pixel,
+   making borders look thick), native print draws true vector hairlines
+   that exactly match the on-screen thin borders. In the dialog the user
+   picks "Save as PDF". @media print forces A4 landscape, 12/ page. */
 function downloadPDF(){
-  var btn=$('pdfBtn');var old=btn.innerHTML;btn.disabled=true;btn.textContent='Generating...';
-  makePDF(function(pdf){
-    pdf.save('Capacity_Stickers_SNOWTEX.pdf');
-    btn.innerHTML=old;btn.disabled=false;
-  });
+  if(!hasGenerated) return;
+  window.print();
 }
 function sharePDF(){
   var btn=$('shareBtn');var old=btn.innerHTML;btn.disabled=true;btn.textContent='Preparing...';
   makePDF(function(pdf){
+    var fname=buildFileName();
     var blob=pdf.output('blob');
-    var file=new File([blob],'Capacity_Stickers_SNOWTEX.pdf',{type:'application/pdf'});
+    var file=new File([blob],fname,{type:'application/pdf'});
     btn.innerHTML=old;btn.disabled=false;
     if(navigator.canShare && navigator.canShare({files:[file]})){
       navigator.share({files:[file],title:'Capacity Stickers',text:'SNOWTEX Capacity Stickers'}).catch(function(){});
     } else {
-      pdf.save('Capacity_Stickers_SNOWTEX.pdf');
+      pdf.save(fname);
       alert('Direct share not supported on this device. PDF downloaded, share it manually via WhatsApp.');
     }
   });
@@ -697,10 +868,19 @@ function handleExcelUpload(evt){
       var titleText=String(rows[0]&&rows[0][0]?rows[0][0]:'');
       var buyerMatch=titleText.match(/Buyer:\s*([^|]+)/i);
       var styleMatch=titleText.match(/Style:\s*([^|]+)/i);
+      var lineMatch=titleText.match(/Line:\s*([^|]+)/i);
       var buyer=buyerMatch?buyerMatch[1].trim():'';
       var style=styleMatch?styleMatch[1].trim():'';
+      var line=lineMatch?lineMatch[1].trim():'';
       $('cBuyer').value=buyer;
       $('cStyle').value=style;
+      currentLineName=line;
+      if(line){
+        $('lineBadgeText').textContent=line;
+        $('lineBadgeChip').style.display='inline-flex';
+      } else {
+        $('lineBadgeChip').style.display='none';
+      }
 
       var headerRowIdx=-1;
       for(var i=0;i<rows.length;i++){
@@ -743,13 +923,24 @@ function handleExcelUpload(evt){
       allMachines=machines;
       if(grandSMV>0) $('pSmv').value=(Math.round(grandSMV*100)/100);
       $('cMachines').value='';
+      updatePolicyPreview();
 
       $('uploadZone').classList.add('upload-ok');
       $('uzTitle').textContent=file.name;
       $('uzSub').textContent='Loaded '+machines.length+' machine(s). Total SMV '+(Math.round(grandSMV*100)/100)+'.';
+      $('uzRemoveBtn').style.display='flex';
 
-      status.className='status ok';
-      status.textContent='Loaded '+machines.length+' machine(s). Buyer: '+(buyer||'N/A')+', Style: '+(style||'N/A')+'. Now set parameters and tap Create Capacity Sticker.';
+      $('lineSummaryText').textContent='Loaded '+machines.length+' machine(s) · Buyer: '+(buyer||'N/A')+' · Style: '+(style||'N/A')+'. Now set parameters and tap Create Capacity Sticker.';
+      $('lineBadge').style.display='block';
+      status.className='status info';
+      status.textContent='';
+
+      var hb=$('helpBtn');
+      if(hb){
+        hb.classList.add('hl');
+        hb.classList.add('blinking');
+        setTimeout(function(){hb.classList.remove('blinking');},3000);
+      }
     }catch(err){
       status.className='status err';
       status.textContent='Error reading file: '+err.message;
