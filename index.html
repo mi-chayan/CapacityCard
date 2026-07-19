@@ -817,14 +817,16 @@ function makePDF(cb){
   });
 }
 function buildFileName(){
-  var base=(currentLineName||'Capacity_Stickers').trim();
-  var safe=base.replace(/[^a-zA-Z0-9ঀ-৿]+/g,'_').replace(/^_+|_+$/g,'');
-  if(!safe) safe='Capacity_Stickers';
+  var line=(currentLineName||'').trim();
+  var safeLine=line.replace(/[^a-zA-Z0-9ঀ-৿]+/g,'');
   var d=new Date();
   var yyyy=d.getFullYear();
   var mm=String(d.getMonth()+1).padStart(2,'0');
   var dd=String(d.getDate()).padStart(2,'0');
-  return safe+'_'+yyyy+'-'+mm+'-'+dd+'.pdf';
+  var parts=['CapacityCard'];
+  if(safeLine) parts.push(safeLine);
+  parts.push(yyyy+'-'+mm+'-'+dd);
+  return parts.join('_')+'.pdf';
 }
 /* Download uses the browser's native print-to-PDF. Unlike html2canvas
    (which rasterizes and forces every line to at least 1 solid pixel,
@@ -835,7 +837,19 @@ function downloadPDF(){
   if(!hasGenerated) return;
   window.print();
 }
+/* Detects a phone/tablet, not just touch support, since some laptops
+   have touch screens too. Desktop browsers cannot receive a file share
+   or auto-launch WhatsApp with an attachment — there is no web API for
+   that — so on PC we just warn instead of pretending to do something. */
+function isMobileDevice(){
+  return /Android|iPhone|iPad|iPod|Mobi|Windows Phone/i.test(navigator.userAgent);
+}
 function sharePDF(){
+  if(!hasGenerated) return;
+  if(!isMobileDevice()){
+    alert('Share is functional on mobile only.\n\nOn PC, please click "Download PDF" and share the file yourself.');
+    return;
+  }
   var btn=$('shareBtn');var old=btn.innerHTML;btn.disabled=true;btn.textContent='Preparing...';
   makePDF(function(pdf){
     var fname=buildFileName();
