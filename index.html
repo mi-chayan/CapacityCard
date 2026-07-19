@@ -677,7 +677,7 @@ function applyDayResultsToCard(card){
     var p70=tr.querySelector('.prod70'),p100=tr.querySelector('.prod100'),p120=tr.querySelector('.prod120');
     var b70=tr.querySelector('.pib70'),b100=tr.querySelector('.pib100'),b120=tr.querySelector('.pib120');
     if(result){
-      b70.textContent=result.pib70.toFixed(2);b100.textContent=result.pib100.toFixed(2);b120.textContent=result.pib120.toFixed(2);
+      b70.textContent=String(result.pib70);b100.textContent=String(result.pib100);b120.textContent=String(result.pib120);
       var prod=calcProduction(opSmv,result.operatorTarget);
       if(prod){p70.textContent=prod.prod70;p100.textContent=prod.prod100;p120.textContent=prod.prod120;}
       else{p70.textContent='';p100.textContent='';p120.textContent='';}
