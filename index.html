@@ -59,6 +59,33 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7A99' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer;}
 .field-opt input{border-style:dashed;}
 .field-opt input:focus{border-style:solid;}
+/* MANUAL TARGET% */
+.manual-head{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:14px;}
+.manual-btn{display:inline-flex;align-items:center;gap:8px;background:#F8F9FB;border:1.5px solid var(--border);border-radius:10px;padding:11px 15px;font-family:inherit;font-size:12px;font-weight:800;color:var(--navy);cursor:pointer;letter-spacing:.4px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.manual-btn:hover{border-color:var(--navy);}
+.manual-btn .mb-dot{width:8px;height:8px;border-radius:50%;background:#C5CFDF;flex-shrink:0;transition:.15s;}
+.manual-btn.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 3px 12px rgba(200,16,46,.26);}
+.manual-btn.on .mb-dot{background:#fff;}
+.manual-note{font-size:11px;font-weight:600;color:var(--muted);line-height:1.5;}
+.manual-note.on{color:var(--red);}
+.manual-body{display:none;margin-top:12px;padding:14px;background:#FFFBFC;border:1.5px solid #F0B8C2;border-radius:11px;}
+.manual-body.open{display:block;animation:fade .2s ease;}
+.manual-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+@media(min-width:520px){.manual-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:900px){.manual-grid{grid-template-columns:repeat(7,1fr);}}
+.mday{position:relative;}
+.mday label{display:block;font-size:9px;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px;text-align:center;}
+.mday input{width:100%;background:#fff;border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-family:'Roboto Mono',monospace;font-size:15px;font-weight:700;padding:11px 18px 11px 6px;outline:none;text-align:center;-webkit-appearance:none;appearance:none;}
+.mday-x{position:absolute;right:4px;bottom:50%;transform:translateY(50%);width:19px;height:19px;border-radius:50%;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:13px;font-weight:700;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+.mday-x:hover{background:var(--red-light);color:var(--red);border-color:#F0B8C2;}
+.mday.has-val .mday-x{display:flex;}
+.mday input::-webkit-outer-spin-button,.mday input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.mday input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.1);}
+.mday input.filled{border-color:var(--green);background:var(--green-light);color:var(--green);}
+.mday input.muted-day{opacity:.5;}
+.manual-sum{font-size:11px;font-weight:700;color:var(--navy);margin-top:10px;line-height:1.6;}
+.manual-sum b{color:var(--red);}
+.field.disabled-field input{opacity:.45;pointer-events:none;background:#EEF1F7;border-style:dashed;}
 /* FILE UPLOAD (compact) */
 .setup-row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;}
 .upload-mini{flex:1;min-width:190px;display:flex;align-items:center;gap:10px;border:1.5px dashed #C5CFDF;border-radius:10px;background:#F8F9FB;padding:10px 12px;cursor:pointer;transition:.2s;}
@@ -125,9 +152,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .page-nav button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
 .page-nav button:disabled{background:#C5CFDF;cursor:not-allowed;}
 .page-nav #pageIndicator{font-weight:800;font-size:13px;color:var(--navy);min-width:120px;text-align:center;}
-.render-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;}
+.render-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.6;}
+/* ZOOM BAR + VIEWPORT (screen only, never affects print/PDF geometry) */
+.zoombar{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:11px;padding:8px 10px;margin-bottom:10px;box-shadow:var(--shadow);flex-wrap:wrap;}
+.zb-btn{background:var(--navy);color:#fff;border:none;border-radius:9px;width:40px;height:40px;font-family:inherit;font-size:21px;font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;padding:0;}
+.zb-btn:active{background:var(--navy2);}
+.zb-btn:disabled{background:#C5CFDF;cursor:not-allowed;}
+.zb-level{font-family:'Roboto Mono',monospace;font-weight:700;font-size:13px;color:var(--navy);min-width:56px;text-align:center;}
+.zb-pill{background:#F8F9FB;border:1.5px solid var(--border);color:var(--navy);border-radius:9px;padding:10px 13px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.zb-pill:hover{border-color:var(--navy);}
+.zb-pill.on{background:var(--navy);border-color:var(--navy);color:#fff;}
+#pagesViewport{position:relative;overflow:auto;-webkit-overflow-scrolling:touch;background:#DDE2EA;border:1px solid var(--border);border-radius:12px;padding:8px;height:64vh;min-height:300px;touch-action:pan-x pan-y;overscroll-behavior:contain;}
+#pagesSizer{position:relative;margin:0 auto;}
+#pagesStage{position:absolute;top:0;left:0;transform-origin:0 0;}
 /* STICKER PAGES (A4 landscape) */
-#pagesContainer{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+#pagesContainer{width:287mm;}
 #pagesContainer .page{display:none;}
 #pagesContainer .page.active{display:grid;}
 .page{
@@ -199,8 +238,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* PRINT fallback */
 @media print{
   body{background:#fff;padding:0;}
-  .topbar,.card,.action-bar,.page-nav,.render-hint,.footer,.modal-mask{display:none!important;}
+  .topbar,.card,.action-bar,.page-nav,.render-hint,.footer,.modal-mask,.zoombar{display:none!important;}
   .result-zone{display:block!important;}
+  /* screen-only zoom shell is fully dissolved for print, so the page
+     geometry below is identical to the pre-zoom build */
+  #pagesViewport{overflow:visible!important;height:auto!important;min-height:0!important;max-height:none!important;background:none!important;border:none!important;border-radius:0!important;padding:0!important;}
+  #pagesSizer{position:static!important;width:auto!important;height:auto!important;margin:0!important;}
+  #pagesStage{position:static!important;transform:none!important;width:auto!important;height:auto!important;}
+  #pagesContainer{width:auto!important;}
   #pagesContainer .page{display:grid!important;border:none;margin:0;width:100%;height:100%;page-break-after:always;}
   #pagesContainer .page:last-child{page-break-after:auto;}
   @page{size:A4 landscape;margin:5mm;}
@@ -281,6 +326,29 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <input id="pTotalDays" type="number" min="1" max="7" inputmode="numeric" placeholder="defaults to LC Days">
       </div>
     </div>
+
+    <div class="manual-head">
+      <button type="button" class="manual-btn" id="manualBtn" onclick="toggleManual()">
+        <span class="mb-dot"></span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        Manual Target%
+      </button>
+      <span class="manual-note" id="manualNote">Layout policy table is driving the daily targets</span>
+    </div>
+    <div class="manual-body" id="manualBody">
+      <div class="manual-grid">
+        <div class="mday" id="mWrap1"><label>Day 1</label><input id="mDay1" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 1" onclick="clearManualDay(1)">&times;</button></div>
+        <div class="mday" id="mWrap2"><label>Day 2</label><input id="mDay2" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 2" onclick="clearManualDay(2)">&times;</button></div>
+        <div class="mday" id="mWrap3"><label>Day 3</label><input id="mDay3" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 3" onclick="clearManualDay(3)">&times;</button></div>
+        <div class="mday" id="mWrap4"><label>Day 4</label><input id="mDay4" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 4" onclick="clearManualDay(4)">&times;</button></div>
+        <div class="mday" id="mWrap5"><label>Day 5</label><input id="mDay5" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 5" onclick="clearManualDay(5)">&times;</button></div>
+        <div class="mday" id="mWrap6"><label>Day 6</label><input id="mDay6" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 6" onclick="clearManualDay(6)">&times;</button></div>
+        <div class="mday" id="mWrap7"><label>Day 7</label><input id="mDay7" type="number" step="0.01" min="0" max="100" inputmode="decimal" placeholder="%"><button type="button" class="mday-x" title="Clear Day 7" onclick="clearManualDay(7)">&times;</button></div>
+      </div>
+      <div class="hint">দিন ১ থেকে ক্রমানুসারে <b>লাইন টার্গেট%</b> দিন। <b>Total Days</b> খালি রাখলে যতগুলো ঘর পূরণ করবেন ততগুলো দিনই আসবে। Total Days বেশি দিলে <b>শেষ ঘরের টার্গেটটিই</b> বাকি দিনগুলোতে চলতে থাকবে (যেমন ২০, ৩০, ৫০ দিয়ে Total Days ৫ = ২০, ৩০, ৫০, ৫০, ৫০)। কম দিলে ততটুকুই আসবে। অপারেটর টার্গেট = লাইন টার্গেট + ১০%, বায়ার ক্যাপ পর্যন্ত (Special ৬৫%, Normal ৭৫%)। PIB ও প্রোডাকশনের হিসাব আগের নিয়মেই হবে।</div>
+      <div class="manual-sum" id="manualSum" style="display:none;"></div>
+    </div>
+
     <div class="policy-box" id="policyPreview"></div>
     <div class="status info" id="uploadStatus"></div>
   </div>
@@ -344,8 +412,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <span id="pageIndicator">Page 1 of 1</span>
       <button id="nextPageBtn" onclick="nextPage()">Next &#9654;</button>
     </div>
-    <div class="render-hint">A4 landscape, 12 stickers per page. যেকোনো স্টিকারে মেশিন নং / এস.এম.ভি / নাম ক্লিক করে বদলানো যাবে।</div>
-    <div id="pagesContainer"></div>
+    <div class="zoombar">
+      <button class="zb-btn" id="zoomOutBtn" onclick="zoomStep(-1)" title="Zoom out">&minus;</button>
+      <span class="zb-level" id="zoomLevel">100%</span>
+      <button class="zb-btn" id="zoomInBtn" onclick="zoomStep(1)" title="Zoom in">+</button>
+      <button class="zb-pill" id="zoomFitBtn" onclick="zoomFit()">Fit Page</button>
+    </div>
+    <div class="render-hint">A4 landscape, 12 stickers per page. যেকোনো স্টিকারে <b>ডাবল ট্যাপ</b> করলে সেটি বড় হয়ে সামনে আসবে, আবার ডাবল ট্যাপে পুরো পেজে ফিরবে। দুই আঙুলে পিঞ্চ করেও জুম করা যাবে। মেশিন নং / এস.এম.ভি / নাম ঘরে ক্লিক করে বদলানো যাবে।</div>
+    <div id="pagesViewport">
+      <div id="pagesSizer">
+        <div id="pagesStage">
+          <div id="pagesContainer"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="footer"></div>
@@ -379,10 +459,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="guide-step"><div class="gs-num">1</div><div class="gs-txt"><b>Excel আপলোড করুন।</b> "Upload OP Process Skill Tag Report" এ ট্যাপ করে <b>OP_Process_Skill_Tag_Report</b> ফাইলটি দিন। মেশিন নং, অপারেটরের নাম, আইডি ও SMV অটো লোড হবে। মোট SMV উপরের SMV ঘরে বসে যাবে।</div></div>
       <div class="guide-step"><div class="gs-num">2</div><div class="gs-txt"><b>নাম টগল।</b> ON রাখলে অপারেটরের নাম Excel থেকে আসবে। OFF করলে নাম ঘর খালি থাকবে, হাতে লিখবেন।</div></div>
       <div class="guide-step"><div class="gs-num">3</div><div class="gs-txt"><b>Input Parameters দিন।</b> SMV (দরকার হলে বদলান), Buyer Type, Style Type, Total Days (ঐচ্ছিক)। এগুলো দিয়ে PIB টাকা ও প্রোডাকশন হিসাব হয়।</div></div>
-      <div class="guide-step"><div class="gs-num">4</div><div class="gs-txt"><b>Custom Design (ঐচ্ছিক)।</b> বাটনে ট্যাপ করে খুলুন। এখানে Buyer, Style বদলাতে পারবেন, নির্দিষ্ট মেশিন নং সিলেক্ট করে শুধু সেগুলোই প্রিন্ট করতে পারবেন, এবং শেষে অতিরিক্ত সম্পূর্ণ খালি স্টিকার যোগ করতে পারবেন।</div></div>
-      <div class="guide-step"><div class="gs-num">5</div><div class="gs-txt"><b>Create Capacity Sticker</b> চাপুন। A4 সাইজে প্রতি পেজে ১২টি স্টিকার তৈরি হবে। Prev / Next দিয়ে পেজ দেখুন।</div></div>
-      <div class="guide-step"><div class="gs-num">6</div><div class="gs-txt"><b>প্রয়োজনে এডিট।</b> যেকোনো স্টিকারে মেশিন নং, এস.এম.ভি বা নাম ঘরে সরাসরি ক্লিক করে (কার্সর আসবে) হাতে বদলাতে পারবেন। কোনো স্টিকারের SMV বদলালে শুধু ঐ স্টিকারের হিসাব আপডেট হবে। নির্দিষ্ট মেশিন বাছতে Custom Design এর "Custom Machine Numbers" ঘর ব্যবহার করুন।</div></div>
-      <div class="guide-step"><div class="gs-num">7</div><div class="gs-txt"><b>Download PDF</b> দিয়ে সব পেজ এক PDF এ সেভ করুন, অথবা <b>Share</b> দিয়ে সরাসরি WhatsApp/অন্য অ্যাপে পাঠান।</div></div>
+      <div class="guide-step"><div class="gs-num">4</div><div class="gs-txt"><b>Manual Target% (ঐচ্ছিক)।</b> লেআউট পলিসির টেবিল বাদ দিয়ে নিজে টার্গেট দিতে চাইলে <b>Manual Target%</b> বাটনে ট্যাপ করুন। দিন ১ থেকে ক্রমানুসারে <b>লাইন টার্গেট%</b> লিখুন। যতগুলো দিন পূরণ করবেন ততগুলো দিনই কার্ডে আসবে। অপারেটর টার্গেট অটো <b>+১০%</b> হবে (Special বায়ার ৬৫%, Normal ৭৫% পর্যন্ত), PIB ও প্রোডাকশন আগের নিয়মেই হিসাব হবে। এই মোডে Total Days ঘরটি বন্ধ থাকবে।</div></div>
+      <div class="guide-step"><div class="gs-num">5</div><div class="gs-txt"><b>Custom Design (ঐচ্ছিক)।</b> বাটনে ট্যাপ করে খুলুন। এখানে Buyer, Style বদলাতে পারবেন, নির্দিষ্ট মেশিন নং সিলেক্ট করে শুধু সেগুলোই প্রিন্ট করতে পারবেন, এবং শেষে অতিরিক্ত সম্পূর্ণ খালি স্টিকার যোগ করতে পারবেন।</div></div>
+      <div class="guide-step"><div class="gs-num">6</div><div class="gs-txt"><b>Create Capacity Sticker</b> চাপুন। A4 সাইজে প্রতি পেজে ১২টি স্টিকার তৈরি হবে। Prev / Next দিয়ে পেজ দেখুন।</div></div>
+      <div class="guide-step"><div class="gs-num">7</div><div class="gs-txt"><b>জুম করুন।</b> প্রিভিউতে পুরো A4 পেজ এক স্ক্রিনেই দেখা যাবে, ডানে-বামে স্ক্রল করতে হবে না। <b>+ / &minus;</b> বাটন বা দুই আঙুলের পিঞ্চ দিয়ে জুম করুন, <b>Fit Page</b> চাপলে আবার পুরো পেজ। কোনো একটি স্টিকারে <b>ডাবল ট্যাপ</b> করলে সেটি বড় হয়ে সামনে আসবে, তখন সহজে SMV বা নাম বদলানো যাবে, আবার ডাবল ট্যাপে পুরো পেজে ফিরে আসবে।</div></div>
+      <div class="guide-step"><div class="gs-num">8</div><div class="gs-txt"><b>প্রয়োজনে এডিট।</b> যেকোনো স্টিকারে মেশিন নং, এস.এম.ভি বা নাম ঘরে সরাসরি ক্লিক করে (কার্সর আসবে) হাতে বদলাতে পারবেন। কোনো স্টিকারের SMV বদলালে শুধু ঐ স্টিকারের হিসাব আপডেট হবে। নির্দিষ্ট মেশিন বাছতে Custom Design এর "Custom Machine Numbers" ঘর ব্যবহার করুন।</div></div>
+      <div class="guide-step"><div class="gs-num">9</div><div class="gs-txt"><b>Download PDF</b> দিয়ে সব পেজ এক PDF এ সেভ করুন, অথবা <b>Share</b> দিয়ে সরাসরি WhatsApp/অন্য অ্যাপে পাঠান।</div></div>
       <div class="guide-feat">
         <h3>সব সুবিধা</h3>
         <ul>
@@ -390,6 +472,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <li>নির্দিষ্ট মেশিন নং সিলেক্ট করে শুধু সেগুলোই প্রিন্ট</li>
           <li>খালি স্টিকার যোগ করার অপশন</li>
           <li>নাম অটো / হাতে লেখার টগল</li>
+          <li>Manual Target% - পলিসি টেবিল বাদ দিয়ে নিজের টার্গেট ও দিন সংখ্যা</li>
+          <li>মোবাইলে জুম ইন / আউট, পিঞ্চ জুম ও ডাবল ট্যাপে এক স্টিকার বড় করে দেখা</li>
           <li>PIB টাকা ও প্রোডাকশন (৭০% / ১০০% / ১২০%) অটো হিসাব</li>
           <li>ক্যাপাসিটি ও লাইন ইফিসিয়েন্সি ঘর সবসময় খালি, হাতে লেখার জন্য</li>
           <li>মোবাইল থেকে PDF শেয়ার</li>
@@ -416,6 +500,7 @@ var allMachines = [];
 var lastDayResults = null;
 var hasGenerated = false;
 var currentLineName = '';
+var manualMode = false;
 
 function $(id){return document.getElementById(id);}
 
@@ -479,6 +564,7 @@ function doRemoveExcel(){
   $('cStyle').value='';
   $('cMachines').value='';
   $('cBlanks').value='';
+  clearManual();
   $('uploadStatus').className='status info';
   $('uploadStatus').textContent='';
   updatePolicyPreview();
@@ -486,6 +572,72 @@ function doRemoveExcel(){
   $('pdfBtn').disabled=true; $('shareBtn').disabled=true;
   $('resultZone').style.display='none';
   $('pagesContainer').innerHTML='';
+}
+
+/* ---------- manual target% ----------
+   Replaces ONLY the layout-policy lookup step. Everything downstream
+   (operator target = line + 10 capped by buyer type, PIB formula,
+   production formula) stays exactly as the automatic path. Day count is
+   however many consecutive day boxes are filled, starting from Day 1. */
+function toggleManual(){
+  manualMode=!manualMode;
+  $('manualBtn').classList.toggle('on',manualMode);
+  $('manualBody').classList.toggle('open',manualMode);
+  var note=$('manualNote');
+  note.classList.toggle('on',manualMode);
+  note.textContent=manualMode
+    ? 'Manual mode ON. Policy table bypassed. Total Days still extends the last typed target.'
+    : 'Layout policy table is driving the daily targets';
+  $('pTotalDays').placeholder=manualMode?'blank = boxes filled':'defaults to LC Days';
+  markManualFilled();
+  updatePolicyPreview();
+}
+function clearManualDay(d){
+  var el=$('mDay'+d);
+  if(!el) return;
+  el.value='';
+  el.focus();
+  updatePolicyPreview();
+}
+/* reads Day1..Day7 in order, stops at the first blank/invalid box */
+function getManualDays(){
+  var out=[];
+  for(var d=1;d<=7;d++){
+    var el=$('mDay'+d);
+    if(!el) break;
+    var raw=(el.value||'').trim();
+    if(raw==='') break;
+    var v=parseFloat(raw);
+    if(isNaN(v)||v<=0) break;
+    out.push(v);
+  }
+  return out;
+}
+function markManualFilled(){
+  var n=getManualDays().length;
+  for(var d=1;d<=7;d++){
+    var el=$('mDay'+d),wrap=$('mWrap'+d);
+    if(!el) continue;
+    el.classList.toggle('filled',manualMode&&d<=n);
+    el.classList.toggle('muted-day',manualMode&&d>n);
+    if(wrap) wrap.classList.toggle('has-val',(el.value||'').trim()!=='');
+  }
+}
+function clearManual(){
+  manualMode=false;
+  for(var d=1;d<=7;d++){
+    var el=$('mDay'+d),wrap=$('mWrap'+d);
+    if(el){el.value='';el.classList.remove('filled');el.classList.remove('muted-day');}
+    if(wrap) wrap.classList.remove('has-val');
+  }
+  $('manualBtn').classList.remove('on');
+  $('manualBody').classList.remove('open');
+  var note=$('manualNote');
+  note.classList.remove('on');
+  note.textContent='Layout policy table is driving the daily targets';
+  $('pTotalDays').placeholder='defaults to LC Days';
+  $('manualSum').style.display='none';
+  $('manualSum').innerHTML='';
 }
 
 /* ---------- custom panel ---------- */
@@ -620,9 +772,141 @@ function showPage(idx){
   $('prevPageBtn').disabled=(idx===0);
   $('nextPageBtn').disabled=(idx===pages.length-1);
   currentPageIndex=idx;
+  focusedCard=null;
+  if(typeof applyZoom==='function') applyZoom();
+  var vp=$('pagesViewport');
+  if(vp){vp.scrollLeft=0;vp.scrollTop=0;}
 }
 function nextPage(){var pages=document.querySelectorAll('#pagesContainer .page');if(currentPageIndex<pages.length-1)showPage(currentPageIndex+1);}
 function prevPage(){if(currentPageIndex>0)showPage(currentPageIndex-1);}
+
+/* ---------- ZOOM (screen only) ----------
+   The sticker page keeps its exact mm geometry. Zooming only applies a
+   CSS transform to a wrapper (#pagesStage) that sits OUTSIDE the page,
+   and @media print plus makePDF both neutralise that transform, so the
+   printed / exported card layout is byte-for-byte what it always was. */
+var ZMIN=0.15, ZMAX=6, ZSTEP=1.25;
+var zoom=1, focusedCard=null;
+var VP_PAD=8;
+
+function activePageEl(){
+  return document.querySelector('#pagesContainer .page.active')||document.querySelector('#pagesContainer .page');
+}
+function applyZoom(){
+  var stage=$('pagesStage'),sizer=$('pagesSizer');
+  var pg=activePageEl();
+  if(!stage||!sizer||!pg) return;
+  var w=pg.offsetWidth,h=pg.offsetHeight;
+  stage.style.width=w+'px';
+  stage.style.height=h+'px';
+  stage.style.transform='scale('+zoom+')';
+  sizer.style.width=Math.round(w*zoom)+'px';
+  sizer.style.height=Math.round(h*zoom)+'px';
+  $('zoomLevel').textContent=Math.round(zoom*100)+'%';
+  $('zoomOutBtn').disabled=(zoom<=ZMIN+0.0001);
+  $('zoomInBtn').disabled=(zoom>=ZMAX-0.0001);
+  $('zoomFitBtn').classList.toggle('on',!focusedCard&&Math.abs(zoom-computeFit())<0.005);
+}
+function computeFit(){
+  var vp=$('pagesViewport'),pg=activePageEl();
+  if(!vp||!pg||!pg.offsetWidth) return 1;
+  var fw=(vp.clientWidth-VP_PAD*2)/pg.offsetWidth;
+  var fh=(vp.clientHeight-VP_PAD*2)/pg.offsetHeight;
+  var f=Math.min(fw,fh);
+  if(f>1) f=1;
+  if(f<ZMIN) f=ZMIN;
+  return f;
+}
+function zoomFit(){
+  focusedCard=null;
+  zoom=computeFit();
+  applyZoom();
+  var vp=$('pagesViewport');
+  vp.scrollLeft=0;vp.scrollTop=0;
+}
+/* zoom keeping the given client point pinned; defaults to viewport centre */
+function setZoomAt(nz,cx,cy){
+  var vp=$('pagesViewport');
+  nz=Math.max(ZMIN,Math.min(ZMAX,nz));
+  var rect=vp.getBoundingClientRect();
+  if(cx===undefined){cx=rect.left+vp.clientWidth/2;cy=rect.top+vp.clientHeight/2;}
+  var ox=cx-rect.left,oy=cy-rect.top;
+  var px=(vp.scrollLeft+ox-VP_PAD)/zoom;
+  var py=(vp.scrollTop+oy-VP_PAD)/zoom;
+  zoom=nz;
+  focusedCard=null;
+  applyZoom();
+  vp.scrollLeft=px*zoom+VP_PAD-ox;
+  vp.scrollTop=py*zoom+VP_PAD-oy;
+}
+function zoomStep(dir){ setZoomAt(dir>0?zoom*ZSTEP:zoom/ZSTEP); }
+/* double tap / double click: bring one sticker to the front, full size */
+function focusCard(card){
+  var vp=$('pagesViewport');
+  var cw=card.offsetWidth,ch=card.offsetHeight;
+  if(!cw||!ch) return;
+  var z=Math.min((vp.clientWidth-VP_PAD*2-6)/cw,(vp.clientHeight-VP_PAD*2-6)/ch);
+  zoom=Math.max(ZMIN,Math.min(ZMAX,z));
+  focusedCard=card;
+  applyZoom();
+  vp.scrollLeft=(card.offsetLeft+cw/2)*zoom+VP_PAD-vp.clientWidth/2;
+  vp.scrollTop=(card.offsetTop+ch/2)*zoom+VP_PAD-vp.clientHeight/2;
+}
+function toggleCardFocus(card){
+  if(focusedCard===card) zoomFit();
+  else focusCard(card);
+}
+function initZoomHandlers(){
+  var vp=$('pagesViewport'),pc=$('pagesContainer');
+  /* desktop double click */
+  pc.addEventListener('dblclick',function(e){
+    var card=e.target.closest?e.target.closest('.card-st'):null;
+    if(card) toggleCardFocus(card);
+  });
+  /* mobile double tap (dblclick is unreliable on touch) */
+  var lastTapT=0,lastTapCard=null;
+  pc.addEventListener('touchend',function(e){
+    if(e.touches.length>0) return;
+    var t=e.changedTouches[0];
+    var el=document.elementFromPoint(t.clientX,t.clientY);
+    var card=el&&el.closest?el.closest('.card-st'):null;
+    if(!card){lastTapT=0;lastTapCard=null;return;}
+    var now=Date.now();
+    if(now-lastTapT<330&&lastTapCard===card){
+      e.preventDefault();
+      toggleCardFocus(card);
+      lastTapT=0;lastTapCard=null;
+    } else { lastTapT=now;lastTapCard=card; }
+  },{passive:false});
+  /* two finger pinch */
+  var pinchD0=0,pinchZ0=1;
+  function dist(ts){var dx=ts[0].clientX-ts[1].clientX,dy=ts[0].clientY-ts[1].clientY;return Math.sqrt(dx*dx+dy*dy);}
+  vp.addEventListener('touchstart',function(e){
+    if(e.touches.length===2){pinchD0=dist(e.touches);pinchZ0=zoom;}
+  },{passive:false});
+  vp.addEventListener('touchmove',function(e){
+    if(e.touches.length===2&&pinchD0>0){
+      e.preventDefault();
+      var d=dist(e.touches);
+      setZoomAt(pinchZ0*(d/pinchD0),(e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2);
+    }
+  },{passive:false});
+  vp.addEventListener('touchend',function(e){if(e.touches.length<2)pinchD0=0;});
+  /* desktop ctrl + wheel */
+  vp.addEventListener('wheel',function(e){
+    if(!e.ctrlKey) return;
+    e.preventDefault();
+    setZoomAt(zoom*(e.deltaY<0?1.1:1/1.1),e.clientX,e.clientY);
+  },{passive:false});
+  /* keep the page fitted when the screen rotates or resizes */
+  var rt=null;
+  window.addEventListener('resize',function(){
+    if(!hasGenerated) return;
+    clearTimeout(rt);
+    rt=setTimeout(function(){ if(!focusedCard) zoomFit(); else applyZoom(); },180);
+  });
+}
+initZoomHandlers();
 
 /* ---------- PIB policy ---------- */
 function getLCDays(smv,styleType){
@@ -653,8 +937,38 @@ function buildDayResults(){
   var smv=parseFloat($('pSmv').value);
   var buyerType=$('pBuyerType').value;
   var styleType=$('pStyleType').value;
-  if(isNaN(smv)||!buyerType||!styleType) return null;
+  if(isNaN(smv)||!buyerType) return null;
   var cap=buyerType==='special'?65:75;
+
+  /* MANUAL PATH: line target% typed per day, style type not needed
+     because LC days no longer decide anything. */
+  if(manualMode){
+    var mans=getManualDays();
+    if(!mans.length) return null;
+    /* Total Days rules in manual mode:
+       blank      -> day count = number of boxes filled
+       larger     -> the LAST typed target carries forward to the rest
+                     (20,30,50 with Total 5 => 20,30,50,50,50)
+       smaller    -> truncated to that many days
+       capped at 7 because the sticker table only has 7 day rows. */
+    var mDays=parseInt($('pTotalDays').value);
+    var mCount=mans.length;
+    var mCarried=0;
+    if(!isNaN(mDays)&&mDays>=1){
+      mCount=Math.min(mDays,7);
+      if(mCount>mans.length) mCarried=mCount-mans.length;
+    }
+    var mrows=[];
+    for(var i=0;i<mCount;i++){
+      var mLineEff=(i<mans.length)?mans[i]:mans[mans.length-1];
+      var mOp=Math.min(mLineEff+10,cap);
+      var mPib=getPIB(mOp);
+      mrows.push({day:i+1,lineEff:mLineEff,operatorTarget:mOp,pib70:mPib.pib70,pib100:mPib.pib100,pib120:mPib.pib120,carried:(i>=mans.length)});
+    }
+    return {rows:mrows,lcDays:null,totalDays:mCount,smv:smv,cap:cap,manual:true,entered:mans.length,carried:mCarried};
+  }
+
+  if(!styleType) return null;
   var lcDays=getLCDays(smv,styleType);
   var totalDays=parseInt($('pTotalDays').value);
   if(!totalDays||totalDays<1) totalDays=lcDays;
@@ -666,7 +980,7 @@ function buildDayResults(){
     var pib=getPIB(op);
     res.push({day:day,lineEff:lineEff,operatorTarget:op,pib70:pib.pib70,pib100:pib.pib100,pib120:pib.pib120});
   }
-  return {rows:res,lcDays:lcDays,totalDays:totalDays,smv:smv,cap:cap};
+  return {rows:res,lcDays:lcDays,totalDays:totalDays,smv:smv,cap:cap,manual:false};
 }
 function applyDayResultsToCard(card){
   var smvEl=card.querySelector('.smv-val');
@@ -702,15 +1016,34 @@ $('pagesContainer').addEventListener('input',function(e){
 /* ---------- policy preview (read-only, two lines) ---------- */
 function updatePolicyPreview(){
   var box=$('policyPreview');
+  var sum=$('manualSum');
+  markManualFilled();
   var dr=buildDayResults();
-  if(!dr){box.style.display='none';box.innerHTML='';return;}
-  var parts=dr.rows.map(function(d){return 'Day'+d.day+': '+d.lineEff+'%→'+d.operatorTarget+'%';});
-  box.innerHTML=
-    '<div><b>Policy:</b> LC '+dr.lcDays+' days, Total '+dr.totalDays+' days, cap '+dr.cap+'%</div>'+
-    '<div style="margin-top:4px;">'+parts.join(' , ')+'</div>';
+  if(!dr){
+    box.style.display='none';box.innerHTML='';
+    if(manualMode){
+      sum.style.display='block';
+      sum.innerHTML='Fill <b>SMV</b>, <b>Buyer Type</b> and at least <b>Day 1</b> to see the calculated targets.';
+    } else { sum.style.display='none';sum.innerHTML=''; }
+    return;
+  }
+  var parts=dr.rows.map(function(d){return 'Day'+d.day+': '+d.lineEff+'%→'+d.operatorTarget+'%'+(d.carried?'*':'');});
+  var head=dr.manual
+    ? '<div><b>Manual:</b> '+dr.totalDays+' day(s), '+dr.entered+' typed'+(dr.carried?' + '+dr.carried+' carried*':'')+', cap '+dr.cap+'%, operator = line + 10%</div>'
+    : '<div><b>Policy:</b> LC '+dr.lcDays+' days, Total '+dr.totalDays+' days, cap '+dr.cap+'%</div>';
+  box.innerHTML=head+'<div style="margin-top:4px;">'+parts.join(' , ')+'</div>';
   box.style.display='block';
+  if(dr.manual){
+    var capped=dr.rows.filter(function(d){return d.lineEff+10>dr.cap;}).length;
+    sum.style.display='block';
+    sum.innerHTML='Day count <b>'+dr.totalDays+'</b> · Operator target range <b>'+
+      Math.min.apply(null,dr.rows.map(function(d){return d.operatorTarget;}))+'% to '+
+      Math.max.apply(null,dr.rows.map(function(d){return d.operatorTarget;}))+'%</b>'+
+      (dr.carried?' · Day '+(dr.entered+1)+' to '+dr.totalDays+' carry <b>'+dr.rows[dr.rows.length-1].lineEff+'%</b>':'')+
+      (capped?' · <b>'+capped+'</b> day(s) clamped to the '+dr.cap+'% buyer cap':'');
+  } else { sum.style.display='none';sum.innerHTML=''; }
 }
-['pSmv','pBuyerType','pStyleType','pTotalDays'].forEach(function(id){
+['pSmv','pBuyerType','pStyleType','pTotalDays','mDay1','mDay2','mDay3','mDay4','mDay5','mDay6','mDay7'].forEach(function(id){
   var el=$(id);
   if(el){el.addEventListener('input',updatePolicyPreview);el.addEventListener('change',updatePolicyPreview);}
 });
@@ -779,24 +1112,41 @@ function generateStickers(){
   $('pdfBtn').disabled=false;
   $('shareBtn').disabled=false;
   $('resultZone').style.display='block';
+  zoomFit();
 
   var pages=Math.max(1,Math.ceil(total/12));
   if(dr){
     status.className='status ok';
-    status.textContent='Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. LC Days '+dr.lcDays+', Total Days '+dr.totalDays+'. PIB + Production applied.';
+    var mode=dr.manual
+      ? 'Manual Target% mode, '+dr.totalDays+' day(s), cap '+dr.cap+'%'
+      : 'LC Days '+dr.lcDays+', Total Days '+dr.totalDays;
+    status.textContent='Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. '+mode+'. PIB + Production applied.';
   } else {
     status.className='status info';
-    status.textContent='Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. (Fill SMV + Buyer Type + Style Type to auto-calculate PIB.)';
+    status.textContent=manualMode
+      ? 'Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. (Manual mode ON: fill SMV + Buyer Type + at least Day 1 target% to calculate PIB.)'
+      : 'Generated '+total+' sticker(s) on '+pages+' page(s)'+selNote+'. (Fill SMV + Buyer Type + Style Type to auto-calculate PIB.)';
   }
   setTimeout(function(){$('resultZone').scrollIntoView({behavior:'smooth',block:'start'});},80);
 }
 
 /* ---------- PDF ---------- */
+/* Neutralises the screen zoom transform for the whole render pass, so
+   html2canvas always captures the page at its true 1:1 mm geometry. */
 function withAllPagesVisible(cb){
   var pages=document.querySelectorAll('#pagesContainer .page');
   var prev=[];
+  var stage=$('pagesStage'),sizer=$('pagesSizer');
+  var sT=stage.style.transform,sW=stage.style.width,sH=stage.style.height;
+  var zW=sizer.style.width,zH=sizer.style.height;
+  stage.style.transform='none';stage.style.width='';stage.style.height='';
+  sizer.style.width='';sizer.style.height='';
   pages.forEach(function(p){prev.push(p.className);p.classList.add('active');});
-  cb(pages,function restore(){pages.forEach(function(p,i){p.className=prev[i];});});
+  cb(pages,function restore(){
+    pages.forEach(function(p,i){p.className=prev[i];});
+    stage.style.transform=sT;stage.style.width=sW;stage.style.height=sH;
+    sizer.style.width=zW;sizer.style.height=zH;
+  });
 }
 function makePDF(cb){
   if(!hasGenerated) return;
