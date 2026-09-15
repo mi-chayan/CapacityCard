@@ -154,7 +154,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .page-nav #pageIndicator{font-weight:800;font-size:13px;color:var(--navy);min-width:120px;text-align:center;}
 .render-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.6;}
 /* ZOOM BAR + VIEWPORT (screen only, never affects print/PDF geometry) */
-.zoombar{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:11px;padding:8px 10px;margin-bottom:10px;box-shadow:var(--shadow);flex-wrap:wrap;}
+.zoombar{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:11px;padding:8px 10px;margin-top:14px;box-shadow:var(--shadow);flex-wrap:wrap;}
+/* DOWNLOAD / SHARE, docked below the preview */
+.bottom-actions{margin-top:10px;}
+.bottom-actions .action-inner{flex-wrap:wrap;}
 .zb-btn{background:var(--navy);color:#fff;border:none;border-radius:9px;width:40px;height:40px;font-family:inherit;font-size:21px;font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;padding:0;}
 .zb-btn:active{background:var(--navy2);}
 .zb-btn:disabled{background:#C5CFDF;cursor:not-allowed;}
@@ -238,7 +241,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* PRINT fallback */
 @media print{
   body{background:#fff;padding:0;}
-  .topbar,.card,.action-bar,.page-nav,.render-hint,.footer,.modal-mask,.zoombar{display:none!important;}
+  .topbar,.card,.action-bar,.page-nav,.render-hint,.footer,.modal-mask,.zoombar,.bottom-actions{display:none!important;}
   .result-zone{display:block!important;}
   /* screen-only zoom shell is fully dissolved for print, so the page
      geometry below is identical to the pre-zoom build */
@@ -394,14 +397,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         Create Capacity Sticker
       </button>
-      <button class="btn btn-sec" id="pdfBtn" onclick="downloadPDF()" disabled>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        Download PDF
-      </button>
-      <button class="btn btn-share" id="shareBtn" onclick="sharePDF()" disabled>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
-        Share
-      </button>
     </div>
   </div>
 
@@ -412,18 +407,32 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <span id="pageIndicator">Page 1 of 1</span>
       <button id="nextPageBtn" onclick="nextPage()">Next &#9654;</button>
     </div>
-    <div class="zoombar">
-      <button class="zb-btn" id="zoomOutBtn" onclick="zoomStep(-1)" title="Zoom out">&minus;</button>
-      <span class="zb-level" id="zoomLevel">100%</span>
-      <button class="zb-btn" id="zoomInBtn" onclick="zoomStep(1)" title="Zoom in">+</button>
-      <button class="zb-pill" id="zoomFitBtn" onclick="zoomFit()">Fit Page</button>
-    </div>
     <div class="render-hint">A4 landscape, 12 stickers per page. যেকোনো স্টিকারে <b>ডাবল ট্যাপ</b> করলে সেটি বড় হয়ে সামনে আসবে, আবার ডাবল ট্যাপে পুরো পেজে ফিরবে। দুই আঙুলে পিঞ্চ করেও জুম করা যাবে। মেশিন নং / এস.এম.ভি / নাম ঘরে ক্লিক করে বদলানো যাবে।</div>
     <div id="pagesViewport">
       <div id="pagesSizer">
         <div id="pagesStage">
           <div id="pagesContainer"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ZOOM + DOWNLOAD/SHARE, docked below the preview -->
+    <div class="zoombar">
+      <button class="zb-btn" id="zoomOutBtn" onclick="zoomStep(-1)" title="Zoom out">&minus;</button>
+      <span class="zb-level" id="zoomLevel">100%</span>
+      <button class="zb-btn" id="zoomInBtn" onclick="zoomStep(1)" title="Zoom in">+</button>
+      <button class="zb-pill" id="zoomFitBtn" onclick="zoomFit()">Fit Page</button>
+    </div>
+    <div class="bottom-actions">
+      <div class="action-inner">
+        <button class="btn btn-sec" id="pdfBtn" onclick="downloadPDF()" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Download PDF
+        </button>
+        <button class="btn btn-share" id="shareBtn" onclick="sharePDF()" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+          Share
+        </button>
       </div>
     </div>
   </div>
@@ -465,20 +474,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="guide-step"><div class="gs-num">7</div><div class="gs-txt"><b>জুম করুন।</b> প্রিভিউতে পুরো A4 পেজ এক স্ক্রিনেই দেখা যাবে, ডানে-বামে স্ক্রল করতে হবে না। <b>+ / &minus;</b> বাটন বা দুই আঙুলের পিঞ্চ দিয়ে জুম করুন, <b>Fit Page</b> চাপলে আবার পুরো পেজ। কোনো একটি স্টিকারে <b>ডাবল ট্যাপ</b> করলে সেটি বড় হয়ে সামনে আসবে, তখন সহজে SMV বা নাম বদলানো যাবে, আবার ডাবল ট্যাপে পুরো পেজে ফিরে আসবে।</div></div>
       <div class="guide-step"><div class="gs-num">8</div><div class="gs-txt"><b>প্রয়োজনে এডিট।</b> যেকোনো স্টিকারে মেশিন নং, এস.এম.ভি বা নাম ঘরে সরাসরি ক্লিক করে (কার্সর আসবে) হাতে বদলাতে পারবেন। কোনো স্টিকারের SMV বদলালে শুধু ঐ স্টিকারের হিসাব আপডেট হবে। নির্দিষ্ট মেশিন বাছতে Custom Design এর "Custom Machine Numbers" ঘর ব্যবহার করুন।</div></div>
       <div class="guide-step"><div class="gs-num">9</div><div class="gs-txt"><b>Download PDF</b> দিয়ে সব পেজ এক PDF এ সেভ করুন, অথবা <b>Share</b> দিয়ে সরাসরি WhatsApp/অন্য অ্যাপে পাঠান।</div></div>
-      <div class="guide-feat">
-        <h3>সব সুবিধা</h3>
-        <ul>
-          <li>এক পেজে ১২টি স্টিকার, সব মেশিন একাধিক পেজে ভাগ হয়ে যায়</li>
-          <li>নির্দিষ্ট মেশিন নং সিলেক্ট করে শুধু সেগুলোই প্রিন্ট</li>
-          <li>খালি স্টিকার যোগ করার অপশন</li>
-          <li>নাম অটো / হাতে লেখার টগল</li>
-          <li>Manual Target% - পলিসি টেবিল বাদ দিয়ে নিজের টার্গেট ও দিন সংখ্যা</li>
-          <li>মোবাইলে জুম ইন / আউট, পিঞ্চ জুম ও ডাবল ট্যাপে এক স্টিকার বড় করে দেখা</li>
-          <li>PIB টাকা ও প্রোডাকশন (৭০% / ১০০% / ১২০%) অটো হিসাব</li>
-          <li>ক্যাপাসিটি ও লাইন ইফিসিয়েন্সি ঘর সবসময় খালি, হাতে লেখার জন্য</li>
-          <li>মোবাইল থেকে PDF শেয়ার</li>
-        </ul>
-      </div>
       <div class="info-card">
         <div class="info-row">
           <div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
@@ -1266,6 +1261,146 @@ function sharePDF(){
 }
 
 /* ---------- EXCEL UPLOAD ---------- */
+/* ---- Format 1: "OP Process Skill Tag Report" style (unchanged from original) ---- */
+function tryParseFormat1(wb){
+  var ws=wb.Sheets[wb.SheetNames[0]];
+  var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+
+  var headerRowIdx=-1;
+  for(var i=0;i<rows.length;i++){
+    if(rows[i].includes('MC')&&rows[i].includes('OP ID')){headerRowIdx=i;break;}
+  }
+  if(headerRowIdx===-1) return null;
+
+  var titleText=String(rows[0]&&rows[0][0]?rows[0][0]:'');
+  var buyerMatch=titleText.match(/Buyer:\s*([^|]+)/i);
+  var styleMatch=titleText.match(/Style:\s*([^|]+)/i);
+  var lineMatch=titleText.match(/Line:\s*([^|]+)/i);
+  var buyer=buyerMatch?buyerMatch[1].trim():'';
+  var style=styleMatch?styleMatch[1].trim():'';
+  var line=lineMatch?lineMatch[1].trim():'';
+
+  var header=rows[headerRowIdx];
+  var colMC=header.indexOf('MC');
+  var colOpId=header.indexOf('OP ID');
+  var colOpName=header.indexOf('OP Name');
+  var colSMV=header.indexOf('SMV');
+
+  var machines=[];
+  var currentMC=null,currentOpId='',currentOpName='',smvSum=0,grandSMV=0;
+  function pushMachine(){
+    if(currentMC!==null&&currentMC!==0&&currentMC!=='0'){
+      machines.push({mc:currentMC,opId:currentOpId,opName:currentOpName,smv:smvSum});
+    }
+    currentMC=null;currentOpId='';currentOpName='';smvSum=0;
+  }
+  for(var j=headerRowIdx+1;j<rows.length;j++){
+    var r=rows[j];
+    var firstCell=String(r[0]||'').trim();
+    if(firstCell==='MIN') continue;
+    var mc=r[colMC];
+    if(mc===''||mc===undefined) continue;
+    var smvVal=parseFloat(r[colSMV]);
+    if(!isNaN(smvVal)) grandSMV+=smvVal;
+    if(currentMC===null) currentMC=mc;
+    if(mc!==currentMC){pushMachine();currentMC=mc;}
+    var opId=String(r[colOpId]||'').trim();
+    var opName=String(r[colOpName]||'').trim();
+    if(opId&&opId.toLowerCase()!=='not entry') currentOpId=opId;
+    if(opName) currentOpName=opName;
+    if(!isNaN(smvVal)) smvSum+=smvVal;
+  }
+  pushMachine();
+
+  return {buyer:buyer,style:style,line:line,machines:machines,grandSMV:grandSMV,format:1};
+}
+
+/* ---- Format 2: "LinePaperLayout" / WSN operation-table style ---- */
+function normLabel(v){
+  return String(v===null||v===undefined?'':v).toLowerCase().replace(/[\s:]+$/,'').replace(/\s+/g,' ').trim();
+}
+function scanLabelValue(rows,targetNorm){
+  for(var r=0;r<rows.length;r++){
+    var row=rows[r];
+    for(var c=0;c<row.length;c++){
+      if(normLabel(row[c])===targetNorm){
+        for(var c2=c+1;c2<row.length;c2++){
+          var v=row[c2];
+          if(v!==''&&v!==undefined&&v!==null) return String(v).trim();
+        }
+      }
+    }
+  }
+  return '';
+}
+function tryParseFormat2(wb){
+  var opInfo=null;
+  for(var s=0;s<wb.SheetNames.length&&!opInfo;s++){
+    var ws=wb.Sheets[wb.SheetNames[s]];
+    var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    for(var r=0;r<rows.length;r++){
+      var row=rows[r];
+      var colSl=-1,colOpNameId=-1,colFSMV=-1,colAssignSMV=-1;
+      for(var c=0;c<row.length;c++){
+        var norm=normLabel(row[c]);
+        if(norm==='sl') colSl=c;
+        else if(norm.indexOf('operator name')===0) colOpNameId=c;
+        else if(norm==='f-smv') colFSMV=c;
+        else if(norm==='assign smv') colAssignSMV=c;
+      }
+      if(colSl!==-1&&colOpNameId!==-1){
+        opInfo={rows:rows,headerRowIdx:r,colSl:colSl,colOpNameId:colOpNameId,colFSMV:colFSMV,colAssignSMV:colAssignSMV};
+        break;
+      }
+    }
+  }
+  if(!opInfo) return null;
+
+  var buyer='',style='',lineNo='',floorNo='';
+  for(var s2=0;s2<wb.SheetNames.length;s2++){
+    var ws2=wb.Sheets[wb.SheetNames[s2]];
+    var rows2=XLSX.utils.sheet_to_json(ws2,{header:1,defval:''});
+    if(!buyer) buyer=scanLabelValue(rows2,'buyer');
+    if(!style) style=scanLabelValue(rows2,'style');
+    if(!lineNo) lineNo=scanLabelValue(rows2,'line no');
+    if(!floorNo) floorNo=scanLabelValue(rows2,'floor no');
+  }
+  var line=lineNo||floorNo;
+
+  var rows=opInfo.rows;
+  var machines=[];
+  var blockOpName='',blockOpId='',grandSMV=0;
+  for(var j=opInfo.headerRowIdx+1;j<rows.length;j++){
+    var r=rows[j];
+    var slCell=String(r[opInfo.colSl]!==undefined?r[opInfo.colSl]:'').trim();
+    if(slCell==='') continue;
+    var wsnMatch=slCell.match(/WSN[-\s]*([0-9]+)/i);
+    if(wsnMatch&&/total/i.test(slCell)){
+      var mcNum=parseInt(wsnMatch[1],10);
+      var assignVal=opInfo.colAssignSMV!==-1?parseFloat(r[opInfo.colAssignSMV]):NaN;
+      var fVal=opInfo.colFSMV!==-1?parseFloat(r[opInfo.colFSMV]):NaN;
+      var smv=!isNaN(assignVal)?assignVal:(!isNaN(fVal)?fVal:0);
+      machines.push({mc:mcNum,opId:blockOpId,opName:blockOpName,smv:smv});
+      grandSMV+=smv;
+      blockOpName='';blockOpId='';
+      continue;
+    }
+    var opNameId=opInfo.colOpNameId!==-1?String(r[opInfo.colOpNameId]||'').trim():'';
+    if(opNameId&&opNameId!=='-'){
+      var m2=opNameId.match(/^(.*)-(\d+)\s*$/);
+      if(m2){blockOpName=m2[1].trim();blockOpId=m2[2].trim();}
+      else{blockOpName=opNameId;}
+    }
+  }
+  if(machines.length===0) return null;
+
+  return {buyer:buyer,style:style,line:line,machines:machines,grandSMV:grandSMV,format:2};
+}
+
+function parseWorkbook(wb){
+  return tryParseFormat1(wb)||tryParseFormat2(wb);
+}
+
 function handleExcelUpload(evt){
   var file=evt.target.files[0];
   if(!file) return;
@@ -1276,16 +1411,12 @@ function handleExcelUpload(evt){
     try{
       var data=new Uint8Array(e.target.result);
       var wb=XLSX.read(data,{type:'array'});
-      var ws=wb.Sheets[wb.SheetNames[0]];
-      var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      var parsed=parseWorkbook(wb);
+      if(!parsed){status.className='status err';status.textContent='Could not recognize this Excel format (no MC/OP ID table or WSN operation table found). Check the file.';return;}
 
-      var titleText=String(rows[0]&&rows[0][0]?rows[0][0]:'');
-      var buyerMatch=titleText.match(/Buyer:\s*([^|]+)/i);
-      var styleMatch=titleText.match(/Style:\s*([^|]+)/i);
-      var lineMatch=titleText.match(/Line:\s*([^|]+)/i);
-      var buyer=buyerMatch?buyerMatch[1].trim():'';
-      var style=styleMatch?styleMatch[1].trim():'';
-      var line=lineMatch?lineMatch[1].trim():'';
+      var buyer=parsed.buyer,style=parsed.style,line=parsed.line;
+      var machines=parsed.machines,grandSMV=parsed.grandSMV;
+
       $('cBuyer').value=buyer;
       $('cStyle').value=style;
       currentLineName=line;
@@ -1295,44 +1426,6 @@ function handleExcelUpload(evt){
       } else {
         $('lineBadgeChip').style.display='none';
       }
-
-      var headerRowIdx=-1;
-      for(var i=0;i<rows.length;i++){
-        if(rows[i].includes('MC')&&rows[i].includes('OP ID')){headerRowIdx=i;break;}
-      }
-      if(headerRowIdx===-1){status.className='status err';status.textContent='Could not find header row (MC / OP ID). Check the file.';return;}
-
-      var header=rows[headerRowIdx];
-      var colMC=header.indexOf('MC');
-      var colOpId=header.indexOf('OP ID');
-      var colOpName=header.indexOf('OP Name');
-      var colSMV=header.indexOf('SMV');
-
-      var machines=[];
-      var currentMC=null,currentOpId='',currentOpName='',smvSum=0,grandSMV=0;
-      function pushMachine(){
-        if(currentMC!==null&&currentMC!==0&&currentMC!=='0'){
-          machines.push({mc:currentMC,opId:currentOpId,opName:currentOpName,smv:smvSum});
-        }
-        currentMC=null;currentOpId='';currentOpName='';smvSum=0;
-      }
-      for(var j=headerRowIdx+1;j<rows.length;j++){
-        var r=rows[j];
-        var firstCell=String(r[0]||'').trim();
-        if(firstCell==='MIN') continue;
-        var mc=r[colMC];
-        if(mc===''||mc===undefined) continue;
-        var smvVal=parseFloat(r[colSMV]);
-        if(!isNaN(smvVal)) grandSMV+=smvVal;
-        if(currentMC===null) currentMC=mc;
-        if(mc!==currentMC){pushMachine();currentMC=mc;}
-        var opId=String(r[colOpId]||'').trim();
-        var opName=String(r[colOpName]||'').trim();
-        if(opId&&opId.toLowerCase()!=='not entry') currentOpId=opId;
-        if(opName) currentOpName=opName;
-        if(!isNaN(smvVal)) smvSum+=smvVal;
-      }
-      pushMachine();
 
       allMachines=machines;
       if(grandSMV>0) $('pSmv').value=(Math.round(grandSMV*100)/100);
