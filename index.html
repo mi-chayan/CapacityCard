@@ -175,7 +175,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   column-gap:1.5mm;row-gap:2mm;border:1px solid #999;overflow:hidden;
   font-family:'Noto Sans Bengali','SolaimanLipi',sans-serif;
 }
-.card-st{border:0.75px solid #000;display:flex;flex-direction:column;font-size:7px;overflow:hidden;color:#000;}
+.card-st{border:0.75px solid #000;display:flex;flex-direction:column;font-size:8.5px;overflow:hidden;color:#000;}
 /* the whole card — title, SMV/Target/Buyer, Name/Style, and the day
    table — is ONE single table, exactly like the original Excel 'Blank
    card' sheet, so every field gets a real, complete cell border on all
@@ -187,21 +187,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .card-st table td,.card-st table th{border:0.5px solid #000;text-align:center;padding:0.5px 2px;overflow:hidden;}
 .card-st table tbody tr{height:3.7mm;}
 .card-st table tr.title-row td{height:5mm;}
-.card-st table tr.title-row td.title-cell{font-weight:700;font-size:9.5px;text-align:center;}
+.card-st table tr.title-row td.title-cell{font-weight:700;font-size:11.5px;text-align:center;}
 .card-st table tr.title-row td.machine-val{font-weight:700;text-align:center;}
 .card-st table tr.info-row td{height:4mm;}
-.card-st table td.lbl-cell{font-weight:500;text-align:left;font-size:6px;line-height:1.1;}
+.card-st table td.lbl-cell{font-weight:500;text-align:left;font-size:6.3px;line-height:1.1;}
 .card-st table td.machine-val,
 .card-st table td.smv-val,.card-st table td.target-val,.card-st table td.buyer-val,
 .card-st table td.nameid-val,.card-st table td.style-val{font-weight:700;text-align:left;}
 .card-st table td[contenteditable="true"]{cursor:text;}
 .card-st table td[contenteditable="true"]:hover,
 .card-st table td[contenteditable="true"]:focus{outline:1px dashed #1b5fa8;background:#eef5ff;}
-.card-st table tr.hdr-row td{font-weight:500;font-size:6px;line-height:1;height:5mm;white-space:normal;}
-.card-st table tr.cap-row td{font-weight:700;font-size:5px;}
+.card-st table tr.hdr-row td{font-weight:500;font-size:6.4px;line-height:1;height:5mm;white-space:normal;padding-left:1px;padding-right:1px;}
+.card-st table tr.cap-row td{font-weight:700;font-size:8.5px;}
 .card-st table td.pib70,.card-st table td.pib100,.card-st table td.pib120{font-weight:700;color:#000;}
 .card-st table td.prod70,.card-st table td.prod100,.card-st table td.prod120{font-weight:700;color:#000;}
-.card-st table tr.lineeff-head td{font-weight:700;font-size:5px;padding:0;}
+.card-st table tr.lineeff-head td{font-weight:700;font-size:6.6px;padding:0;}
 /* matches the original Excel 'Blank card' tab exactly: every internal
    border is thin (1px), the only thicker ("medium") lines are the top
    of the ক্যাপাসিটি row and the bottom of the last line-efficiency row,
@@ -684,6 +684,7 @@ function refreshNameFields(){
     if(on){
       el.textContent=computeNameId({opName:card.dataset.opName||'',opId:card.dataset.opId||''});
     } else { el.textContent=''; }
+    fitCell(el);
   });
 }
 
@@ -743,6 +744,51 @@ function buildCardHTML(){
     '</table>'+
     '<div class="footnote">ইফিসিয়েন্সি ও ডিফেক্ট রেটের উপর পি আই বি এমাউন্ট পরিবর্তনশীল</div>'+
   '</div>';
+}
+
+/* ---------- free-text auto fit ----------
+   Buyer, Style and Name are typed by people and can be any length. The
+   card font is now as large as the cell box allows, so a long value gets
+   stepped down just enough to fit instead of being clipped. Only the
+   font-size of that one cell changes; the cell box, borders and row
+   heights are never touched, so the printed layout is unaffected. */
+var FIT_MIN=4.8, _fitSpan=null;
+function fitCell(td){
+  if(!td) return;
+  td.style.fontSize='';
+  var txt=(td.textContent||'').trim();
+  if(!txt) return;
+  var cs=getComputedStyle(td);
+  var base=parseFloat(cs.fontSize);
+  var avail=td.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  if(!base||avail<=0) return;           /* page hidden, nothing to measure */
+  if(!_fitSpan){
+    _fitSpan=document.createElement('span');
+    _fitSpan.style.cssText='position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:-9999px;';
+    document.body.appendChild(_fitSpan);
+  }
+  _fitSpan.style.fontFamily=cs.fontFamily;
+  _fitSpan.style.fontWeight=cs.fontWeight;
+  _fitSpan.textContent=txt;
+  var fs=base;
+  for(var i=0;i<24;i++){
+    _fitSpan.style.fontSize=fs+'px';
+    if(_fitSpan.getBoundingClientRect().width<=avail) break;
+    fs=Math.round((fs-0.25)*100)/100;
+    if(fs<=FIT_MIN){fs=FIT_MIN;break;}
+  }
+  if(fs<base) td.style.fontSize=fs+'px';
+}
+var FIT_SELECTORS=['.machine-val','.smv-val','.buyer-val','.nameid-val','.style-val'];
+function fitCardFreeText(card){
+  FIT_SELECTORS.forEach(function(s){fitCell(card.querySelector(s));});
+}
+/* every page must be measurable, so run the pass with all pages laid out */
+function fitAllCards(){
+  withAllPagesVisible(function(pages,restore){
+    document.querySelectorAll('.card-st').forEach(fitCardFreeText);
+    restore();
+  });
 }
 
 /* ---------- pages ---------- */
@@ -1007,10 +1053,13 @@ function applyDayResultsToCard(card){
 function recomputeCard(card){ if(lastDayResults) applyDayResultsToCard(card); }
 $('pagesContainer').addEventListener('input',function(e){
   var t=e.target;
-  if(t && t.classList && t.classList.contains('smv-val')){
+  if(!t||!t.classList) return;
+  if(t.classList.contains('smv-val')){
     var card=t.closest('.card-st');
     if(card) recomputeCard(card);
   }
+  /* keep a hand edited value inside its cell instead of letting it clip */
+  if(t.classList.contains('machine-val')||t.classList.contains('smv-val')||t.classList.contains('nameid-val')) fitCell(t);
 });
 
 /* ---------- policy preview (read-only, two lines) ---------- */
@@ -1102,6 +1151,7 @@ function generateStickers(){
   });
 
   applyMeta();
+  fitAllCards();
   var dr=buildDayResults();
   lastDayResults=dr?dr.rows:null;
   if(lastDayResults){
